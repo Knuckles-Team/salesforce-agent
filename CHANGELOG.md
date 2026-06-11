@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Golden-parity standardization (gitlab-api standard): full pre-commit hook
+  set (mypy/vulture/bandit/codespell/hadolint/compose checks/repo validators),
+  validation scripts (`security_sanitizer`, `verify_api_integration`,
+  `validate_a2a_agent`, `validate_agent`), docker quartet
+  (`debug.Dockerfile`, `agent.compose.yml`, `starship.toml`), `opencode.json`,
+  `uv.lock`, `main_agent.json`, per-domain tool toggles (`SOQLTOOL`,
+  `RECORDSTOOL`, `DESCRIBETOOL`, `BULKTOOL`, `ADMINTOOL`), and a
+  `docs/deployment.md` covering all transports, Compose, and Caddy/Technitium.
+- Typed tool-input contracts in `salesforce_input_models.py` (exported from
+  the package root) with model tests; API wrapper behavior tests.
+
+### Changed
+- `models.py` renamed to `salesforce_response_models.py` per the connector
+  naming convention (`{short}_response_models.py`).
+- `pyproject.toml` aligned to the golden shape (self-referencing `all` extra,
+  ruff/mypy py310 targets, vulture config, `agent_data/**` package-data).
 
 ## [0.1.0] - 2026-06-11
 ### Added

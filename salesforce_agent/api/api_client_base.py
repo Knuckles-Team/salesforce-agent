@@ -2,7 +2,7 @@
 
 Owned thin client (no ``simple-salesforce``): a single httpx.Client that
 attaches the cached bearer token, maps failures to typed errors
-(:mod:`salesforce_agent.models`), retries exactly once on 401 after
+(:mod:`salesforce_agent.salesforce_response_models`), retries exactly once on 401 after
 invalidating the token cache, and redacts secrets from anything it raises.
 
 REST API reference:
@@ -14,7 +14,7 @@ from typing import Any
 import httpx
 
 from salesforce_agent.auth import SalesforceAuth
-from salesforce_agent.models import map_response_error
+from salesforce_agent.salesforce_response_models import map_response_error
 
 
 class ApiClientBase:
@@ -54,7 +54,7 @@ class ApiClientBase:
         ``endpoint`` is joined onto the org's instance URL unless it is
         already absolute. A 401 invalidates the token cache and retries once
         (refresh-on-401); any remaining HTTP >= 400 raises a typed
-        :class:`~salesforce_agent.models.SalesforceError` with secrets
+        :class:`~salesforce_agent.salesforce_response_models.SalesforceError` with secrets
         redacted from the message.
         """
         token, instance_url = self.auth.token()

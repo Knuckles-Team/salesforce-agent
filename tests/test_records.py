@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from salesforce_agent.models import (
+from salesforce_agent.salesforce_response_models import (
     DestructiveOperationBlockedError,
     SalesforceBadRequestError,
 )

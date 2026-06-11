@@ -1,8 +1,8 @@
 services:
-  salesforce-mcp:
+  salesforce-agent-mcp:
     image: knucklessg1/salesforce-agent:latest
-    container_name: salesforce-mcp
-    hostname: salesforce-mcp
+    container_name: salesforce-agent-mcp
+    hostname: salesforce-agent-mcp
     restart: always
     env_file:
       - ../.env
@@ -11,10 +11,6 @@ services:
       - HOST=0.0.0.0
       - PORT=8000
       - TRANSPORT=streamable-http
-      - SALESFORCE_INSTANCE_URL
-      - SALESFORCE_CLIENT_ID
-      - SALESFORCE_CLIENT_SECRET
-      - SALESFORCE_ALLOW_DESTRUCTIVE
     ports:
       - "8000:8000"
     healthcheck:

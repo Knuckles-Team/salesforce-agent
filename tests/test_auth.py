@@ -11,7 +11,7 @@ from salesforce_agent.auth import (
     SalesforceAuth,
     SalesforceConfig,
 )
-from salesforce_agent.models import SalesforceAuthError
+from salesforce_agent.salesforce_response_models import SalesforceAuthError
 from tests.conftest import FakeSalesforce, make_api, make_config
 
 
@@ -156,7 +156,7 @@ class TestClientCredentialsFlow:
 class TestRefreshTokenFlow:
     def test_form_fields(self, fake):
         config = make_config(
-            fake, auth_flow="refresh_token", refresh_token="the-refresh-token"
+            fake, auth_flow="refresh_token", refresh_token="the-refresh-token"  # sanitizer:ignore
         )
         auth = SalesforceAuth(config, transport=httpx.MockTransport(fake.handler))
         auth.token()
@@ -170,7 +170,7 @@ class TestRefreshTokenFlow:
         config = make_config(
             fake,
             auth_flow="refresh_token",
-            refresh_token="the-refresh-token",
+            refresh_token="the-refresh-token",  # sanitizer:ignore
             client_secret="",
         )
         auth = SalesforceAuth(config, transport=httpx.MockTransport(fake.handler))

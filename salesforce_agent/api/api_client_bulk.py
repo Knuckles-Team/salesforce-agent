@@ -15,7 +15,7 @@ CONCEPT:SFDC-1.3 — ``delete``/``hardDelete`` ingest jobs are gated by
 from typing import Any
 
 from salesforce_agent.api.api_client_base import ApiClientBase
-from salesforce_agent.models import (
+from salesforce_agent.salesforce_response_models import (
     DestructiveOperationBlockedError,
     SalesforceBadRequestError,
 )

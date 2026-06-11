@@ -230,7 +230,7 @@ def register_admin_tools(mcp: FastMCP) -> None:
         params_json: str = Field(
             default="{}",
             description=(
-                'JSON args. run_report: {"report_id": ..., ' '"include_details": true}.'
+                'JSON args. run_report: {"report_id": ..., "include_details": true}.'
             ),
         ),
     ) -> Any:

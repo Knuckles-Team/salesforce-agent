@@ -5,8 +5,10 @@
 
 ## Project Structure
 - `salesforce_agent/`: Main package — `auth.py` (OAuth2 flows + token cache),
-  `models.py` (typed errors), `api/` (thin httpx resource clients), `mcp/`
-  (action-routed FastMCP tools), `mcp_server.py`, `agent_server.py`
+  `salesforce_response_models.py` (typed errors),
+  `salesforce_input_models.py` (typed tool-input contracts), `api/` (thin
+  httpx resource clients), `mcp/` (action-routed FastMCP tools),
+  `mcp_server.py`, `agent_server.py`
 - `tests/`: Mocked-httpx test suite (`FakeSalesforce` behind `httpx.MockTransport`)
 - `docs/`: Documentation site (mkdocs) + concept registry (`CONCEPT:SFDC-1.x`)
 
@@ -16,6 +18,35 @@
 - httpx (owned thin Salesforce REST client — **no** `simple-salesforce`)
 - cryptography (optional `jwt` extra, JWT bearer flow only)
 - Model Context Protocol (MCP) via FastMCP
+
+### Architecture Diagram
+```mermaid
+graph TD
+    User([User/A2A]) --> Server[A2A Server / FastAPI]
+    Server --> Agent[Pydantic AI Agent]
+    Agent --> MCP[MCP Server / FastMCP]
+    MCP --> Client[API Client / httpx]
+    Client --> ExternalAPI([Salesforce REST API])
+```
+
+### Workflow Diagram
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant S as Server
+    participant A as Agent
+    participant T as MCP Tool
+    participant API as Salesforce API
+
+    U->>S: Request
+    S->>A: Process Query
+    A->>T: Invoke Tool
+    T->>API: API Request
+    API-->>T: API Response
+    T-->>A: Tool Result
+    A-->>S: Final Response
+    S-->>U: Output
+```
 
 ## Commands
 - `pytest`: Run tests (fully mocked — never needs a live org)

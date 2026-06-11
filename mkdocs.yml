@@ -89,5 +89,5 @@ nav:
   - Overview: overview.md
   - Installation: installation.md
   - Deployment: deployment.md
-  - Usage (MCP / API / Agent): usage.md
+  - Usage (API / CLI / MCP): usage.md
   - Concepts: concepts.md

@@ -8,7 +8,8 @@ __version__ = "0.1.0"
 __all__: list[str] = []
 
 CORE_MODULES = [
-    "salesforce_agent.models",
+    "salesforce_agent.salesforce_response_models",
+    "salesforce_agent.salesforce_input_models",
     "salesforce_agent.auth",
     "salesforce_agent.api_client",
 ]
@@ -32,7 +33,7 @@ for module_name in CORE_MODULES:
     module = importlib.import_module(module_name)
     _expose_members(module)
 
-_loaded_optional_modules = {}
+_loaded_optional_modules: dict[str, Any] = {}
 
 
 def _import_module_safely(module_name: str):

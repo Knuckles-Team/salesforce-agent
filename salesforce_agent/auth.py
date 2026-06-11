@@ -27,11 +27,18 @@ import json
 import os
 import time
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
 import httpx
 from agent_utilities.base_utilities import get_logger, to_boolean
 
-from salesforce_agent.models import SalesforceAuthError, parse_error_payload
+if TYPE_CHECKING:
+    from salesforce_agent.api_client import Api
+
+from salesforce_agent.salesforce_response_models import (
+    SalesforceAuthError,
+    parse_error_payload,
+)
 
 logger = get_logger(__name__)
 
@@ -238,7 +245,7 @@ class SalesforceAuth:
         if response.status_code >= 400:
             message, error_code, _, _ = parse_error_payload(response.text)
             raise SalesforceAuthError(
-                f"Salesforce token request failed ({flow}): " f"{self.redact(message)}",
+                f"Salesforce token request failed ({flow}): {self.redact(message)}",
                 status_code=response.status_code,
                 error_code=error_code,
             )
@@ -279,7 +286,7 @@ class SalesforceAuth:
         """
         try:
             from cryptography.hazmat.primitives import hashes, serialization
-            from cryptography.hazmat.primitives.asymmetric import padding
+            from cryptography.hazmat.primitives.asymmetric import padding, rsa
         except ImportError as exc:  # pragma: no cover - environment dependent
             raise SalesforceAuthError(
                 "The JWT bearer flow needs the 'cryptography' package: "
@@ -299,11 +306,15 @@ class SalesforceAuth:
             + _b64url(json.dumps(claims, separators=(",", ":")).encode())
         )
         key = serialization.load_pem_private_key(self._private_key_pem(), password=None)
+        if not isinstance(key, rsa.RSAPrivateKey):
+            raise SalesforceAuthError(
+                "JWT bearer flow requires an RSA private key (RS256)."
+            )
         signature = key.sign(signing_input, padding.PKCS1v15(), hashes.SHA256())
         return (signing_input + b"." + _b64url(signature)).decode()
 
 
-def get_client() -> "Api":  # noqa: F821 - forward reference resolved at runtime
+def get_client() -> "Api":
     """Build a configured Salesforce :class:`Api` facade from the environment."""
     from salesforce_agent.api_client import Api
 

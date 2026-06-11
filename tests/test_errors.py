@@ -2,7 +2,7 @@
 
 import pytest
 
-from salesforce_agent.models import (
+from salesforce_agent.salesforce_response_models import (
     SalesforceAuthError,
     SalesforceBadRequestError,
     SalesforceConflictError,
@@ -127,7 +127,7 @@ class TestWireErrors:
             api.describe.limits()
 
     def test_unknown_route_is_not_found(self, fake, api):
-        from salesforce_agent.models import SalesforceNotFoundError
+        from salesforce_agent.salesforce_response_models import SalesforceNotFoundError
 
         api.describe.limits()
         with pytest.raises(SalesforceNotFoundError):

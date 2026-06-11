@@ -1,8 +1,34 @@
-# salesforce-agent
+# Salesforce Agent
+## CLI or API | MCP | Agent
 
-![PyPI - Version](https://img.shields.io/badge/version-0.1.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Python](https://img.shields.io/badge/python-3.11%2B-blue)
+![PyPI - Version](https://img.shields.io/pypi/v/salesforce-agent)
+![MCP Server](https://badge.mcpx.dev?type=server 'MCP Server')
+![PyPI - Downloads](https://img.shields.io/pypi/dd/salesforce-agent)
+![GitHub Repo stars](https://img.shields.io/github/stars/Knuckles-Team/salesforce-agent)
+![PyPI - License](https://img.shields.io/pypi/l/salesforce-agent)
+![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/Knuckles-Team/salesforce-agent)
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/salesforce-agent)
+
+*Version: 0.1.0*
+
+> **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
+> server live on the docs site:
+> <https://knuckles-team.github.io/salesforce-agent/>
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Installation](#installation)
+- [MCP Tools](#mcp-tools)
+- [Auth Flows](#auth-flows)
+- [Environment Variables](#environment-variables)
+- [Quick Start](#quick-start)
+- [Deployment](#deployment)
+- [Development](#development)
+- [License](#license)
+
+## Overview
 
 **The Salesforce connector for the agent-utilities fleet** — an owned thin
 httpx wrapper over the Salesforce REST API exposed as a FastMCP server and an
@@ -12,19 +38,44 @@ gates designed for autonomous agents.
 No `simple-salesforce`: every endpoint is a documented thin call with its
 Salesforce API doc URL cited in the docstring.
 
-## Tools (action-routed)
+## Architecture
 
-| Tool | Actions |
-|------|---------|
-| `salesforce_soql` | `query` (auto-pagination via `nextRecordsUrl`, capped), `query_all` (deleted/archived), `explain`, `search` (SOSL) |
-| `salesforce_records` | `get` (field selection), `create`, `update`, `upsert` (external id), `delete`*, `composite` (≤25 subrequests), `collections_create`/`collections_update` (≤200 records), `collections_delete`* |
-| `salesforce_describe` | `global`, `sobject` (fields/relationships/picklists), `record_counts`, `limits` (API usage) |
-| `salesforce_bulk` | `create_job` (insert/update/upsert/`delete`*/`hardDelete`*), `upload` (CSV), `close`, `abort`, `status`, `list_jobs`, `delete_job`, `results` (successful/failed/unprocessed, size-capped) |
-| `salesforce_admin` | `user_info`, `org_info`, `list_reports`, `run_report` (sync, capped). Listing/running Flows is **out of scope for v1**. |
+```mermaid
+graph TD
+    User([User/A2A]) --> Server[A2A Server / salesforce-agent]
+    Server --> Agent[Pydantic AI Agent]
+    Agent --> MCP[MCP Server / salesforce-mcp]
+    MCP --> Client[Api facade / httpx]
+    Client --> ExternalAPI([Salesforce REST API])
+```
+
+## Installation
+
+```bash
+pip install salesforce-agent            # core client only
+pip install salesforce-agent[mcp]       # + FastMCP server
+pip install salesforce-agent[agent]     # + Pydantic AI A2A agent server
+pip install salesforce-agent[jwt]       # + cryptography for the JWT bearer flow
+pip install salesforce-agent[all]       # everything
+```
+
+Prebuilt Docker image: `knucklessg1/salesforce-agent:latest`.
+
+## MCP Tools
+
+Five consolidated, action-routed tools. Each takes `action` and `params_json`.
+
+| Tool | Actions | Toggle |
+|------|---------|--------|
+| `salesforce_soql` | `query` (auto-pagination via `nextRecordsUrl`, capped), `query_all` (deleted/archived), `explain`, `search` (SOSL) | `SOQLTOOL` |
+| `salesforce_records` | `get` (field selection), `create`, `update`, `upsert` (external id), `delete`*, `composite` (≤25 subrequests), `collections_create`/`collections_update` (≤200 records), `collections_delete`* | `RECORDSTOOL` |
+| `salesforce_describe` | `global`, `sobject` (fields/relationships/picklists), `record_counts`, `limits` (API usage) | `DESCRIBETOOL` |
+| `salesforce_bulk` | `create_job` (insert/update/upsert/`delete`*/`hardDelete`*), `upload` (CSV), `close`, `abort`, `status`, `list_jobs`, `delete_job`, `results` (successful/failed/unprocessed, size-capped) | `BULKTOOL` |
+| `salesforce_admin` | `user_info`, `org_info`, `list_reports`, `run_report` (sync, capped). Listing/running Flows is **out of scope for v1**. | `ADMINTOOL` |
 
 `*` Destructive — blocked unless `SALESFORCE_ALLOW_DESTRUCTIVE=true`.
 
-## Auth flows
+## Auth Flows
 
 | Flow | Credentials | Notes |
 |------|-------------|-------|
@@ -37,7 +88,35 @@ Sandbox orgs: `SALESFORCE_SANDBOX=true` (`test.salesforce.com`). Tokens are
 cached with expiry tracking and refreshed transparently (plus one retry on
 401); secrets are redacted from all errors and logs.
 
-## Quick start
+## Environment Variables
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `SALESFORCE_INSTANCE_URL` | — | My Domain instance URL (required for client-credentials and static tokens) |
+| `SALESFORCE_LOGIN_URL` | derived | Override the OAuth login host |
+| `SALESFORCE_SANDBOX` | `False` | Sandbox org (`test.salesforce.com`) |
+| `SALESFORCE_API_VERSION` | `v62.0` | REST API version |
+| `SALESFORCE_AUTH_FLOW` | auto | `client_credentials` / `refresh_token` / `jwt_bearer` / `access_token` |
+| `SALESFORCE_CLIENT_ID` / `SALESFORCE_CLIENT_SECRET` | — | Connected App consumer key/secret |
+| `SALESFORCE_REFRESH_TOKEN` | — | Refresh-token flow credential |
+| `SALESFORCE_JWT_SUBJECT` / `SALESFORCE_JWT_PRIVATE_KEY[_PATH]` / `SALESFORCE_JWT_AUDIENCE` | — | JWT bearer flow |
+| `SALESFORCE_ACCESS_TOKEN` | — | Static access token (testing) |
+| `SALESFORCE_TOKEN_TTL_SECONDS` | `1800` | Cached-token TTL fallback |
+| `SALESFORCE_SSL_VERIFY` | `True` | TLS verification |
+| `SALESFORCE_TIMEOUT` | `30` | HTTP timeout (seconds) |
+| `SALESFORCE_ALLOW_DESTRUCTIVE` | `False` | Gate for all delete paths |
+| `SALESFORCE_MAX_QUERY_RECORDS` | `2000` | Per-call SOQL pagination cap |
+| `SALESFORCE_BULK_RESULTS_MAX_BYTES` | `5000000` | Bulk result download cap |
+| `SALESFORCE_REPORT_MAX_ROWS` | `2000` | Sync report detail-row note (platform cap) |
+| `HOST` / `PORT` / `TRANSPORT` | `0.0.0.0` / `8000` / `stdio` | MCP server bind + transport |
+| `SOQLTOOL` / `RECORDSTOOL` / `DESCRIBETOOL` / `BULKTOOL` / `ADMINTOOL` | `True` | Per-domain tool toggles |
+| `ENABLE_OTEL` / `OTEL_EXPORTER_OTLP_*` | — | Telemetry (OTEL / Langfuse) |
+| `EUNOMIA_TYPE` / `EUNOMIA_POLICY_FILE` / `EUNOMIA_REMOTE_URL` | `none` | MCP authorization middleware |
+| `AUTH_TYPE` | `none` | MCP server auth mode (Docker) |
+
+See `.env.example` for the full annotated list.
+
+## Quick Start
 
 ```bash
 pip install salesforce-agent[all]
@@ -52,6 +131,25 @@ api = Api()  # configured from SALESFORCE_* env vars
 rows = api.soql.query("SELECT Id, Name FROM Account", max_records=200)
 api.records.upsert("Account", "External_Id__c", "X-1", {"Name": "Acme"})
 ```
+
+Typed tool-input contracts live in
+`salesforce_agent.salesforce_input_models`; typed error envelopes in
+`salesforce_agent.salesforce_response_models`.
+
+## Deployment
+
+```bash
+# MCP server only (port 8000, streamable-http, /health)
+docker compose -f docker/mcp.compose.yml up -d
+
+# MCP server + A2A agent server (agent on port 9020, AG-UI web interface)
+docker compose -f docker/agent.compose.yml up -d
+```
+
+The A2A agent server (`salesforce-agent` console script, `agent_server.py`)
+reads `MCP_URL`, `PROVIDER`, and `MODEL_ID` from the environment. See
+[docs/deployment.md](docs/deployment.md) for transports, reverse proxy, and
+DNS guidance.
 
 See [docs/](docs/index.md) for the full overview, installation, usage, and
 deployment guides; concept registry in [docs/concepts.md](docs/concepts.md)

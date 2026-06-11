@@ -2,6 +2,7 @@
 
 import json
 import re
+from typing import Any
 from urllib.parse import parse_qs
 
 import httpx
@@ -68,7 +69,7 @@ class FakeSalesforce:
                 return httpx.Response(400, json=self.token_error)
             self.token_counter += 1
             self.active_token = f"TOKEN-{self.token_counter}"
-            payload = {
+            payload: dict[str, Any] = {
                 "access_token": self.active_token,
                 "instance_url": self.instance,
                 "token_type": "Bearer",
@@ -255,21 +256,21 @@ class FakeSalesforce:
         match = re.fullmatch(f"{DATA_BASE}/jobs/ingest/([^/]+)", path)
         if match:
             job_id = match.group(1)
-            job = self.bulk_jobs.get(job_id)
-            if job is None:
+            ingest_job = self.bulk_jobs.get(job_id)
+            if ingest_job is None:
                 return httpx.Response(
                     404,
                     json=[{"message": "job not found", "errorCode": "NOT_FOUND"}],
                 )
             if method == "PATCH":
-                job["state"] = json.loads(request.content)["state"]
-                if job["state"] == "UploadComplete":
-                    job["state"] = "JobComplete"  # fast-forward processing
-                return httpx.Response(200, json=job)
+                ingest_job["state"] = json.loads(request.content)["state"]
+                if ingest_job["state"] == "UploadComplete":
+                    ingest_job["state"] = "JobComplete"  # fast-forward processing
+                return httpx.Response(200, json=ingest_job)
             if method == "DELETE":
                 del self.bulk_jobs[job_id]
                 return httpx.Response(204)
-            return httpx.Response(200, json=job)
+            return httpx.Response(200, json=ingest_job)
 
         # --- sObject record CRUD ---------------------------------------------
         match = re.fullmatch(f"{DATA_BASE}/sobjects/(\\w+)", path)
@@ -306,10 +307,10 @@ class FakeSalesforce:
 
 
 def make_config(fake: FakeSalesforce, **overrides) -> SalesforceConfig:
-    defaults = dict(
+    defaults: dict[str, Any] = dict(
         instance_url=fake.instance,
         client_id="the-consumer-key",
-        client_secret="the-consumer-secret",
+        client_secret="the-consumer-secret",  # sanitizer:ignore
         api_version=API_V,
     )
     defaults.update(overrides)

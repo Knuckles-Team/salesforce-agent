@@ -21,7 +21,7 @@ text = "MIT"
 mcp = [ "agent-utilities[mcp]>=0.47.0",]
 agent = [ "agent-utilities[agent,logfire]>=0.47.0",]
 jwt = [ "cryptography>=42.0.0",]
-all = [ "agent-utilities[mcp,agent,logfire]>=0.47.0", "cryptography>=42.0.0",]
+all = [ "salesforce-agent[mcp,agent,jwt,logfire]>=0.1.0",]
 test = [ "pytest-xdist>=3.6.0", "pytest", "pytest-asyncio", "pytest-cov", "cryptography>=42.0.0",]
 
 [project.scripts]
@@ -33,10 +33,10 @@ include-package-data = true
 
 [tool.ruff]
 line-length = 88
-target-version = "py311"
+target-version = "py310"
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.10"
 ignore_missing_imports = true
 check_untyped_defs = true
 
@@ -44,7 +44,7 @@ check_untyped_defs = true
 dev = [ "pytest-timeout>=2.4.0",]
 
 [tool.setuptools.package-data]
-salesforce_agent = [ "mcp_config.json",]
+salesforce_agent = [ "mcp_config.json", "agent_data/**",]
 
 [tool.ruff.lint]
 select = [ "E", "F", "I", "UP", "B",]
@@ -52,4 +52,6 @@ ignore = [ "E402", "E501", "B008",]
 
 [tool.setuptools.packages.find]
 where = [ ".",]
-include = [ "salesforce_agent*",]
+
+[tool.vulture]
+ignore_names = ["request", "config", "exc_info"]

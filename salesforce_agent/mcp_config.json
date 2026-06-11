@@ -1,12 +1,3 @@
 {
-  "mcpServers": {
-    "salesforce_agent": {
-      "command": "python",
-      "args": [
-        "-m",
-        "salesforce_agent.mcp_server"
-      ],
-      "env": {}
-    }
-  }
+  "mcpServers": {}
 }
