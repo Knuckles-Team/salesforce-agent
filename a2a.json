@@ -1,0 +1,22 @@
+{
+  "name": "salesforce-agent",
+  "type": "agent",
+  "version": "0.1.0",
+  "description": "Salesforce agent: SOQL/SOSL queries, sObject record CRUD with composite/collections batching, metadata describe, Bulk API 2.0 ingest, and org administration over the Salesforce REST API.",
+  "url": "https://github.com/Knuckles-Team/salesforce-agent/tree/main",
+  "license": "MIT",
+  "capabilities": [
+    {
+      "id": "run_graph_flow",
+      "name": "Graph Flow Execution",
+      "description": "Execute a workflow through the agent's graph orchestration engine"
+    }
+  ],
+  "tools": [
+    {
+      "id": "graph-flow",
+      "type": "flow",
+      "description": "Run complex multi-step workflows via Pydantic-Graph"
+    }
+  ]
+}

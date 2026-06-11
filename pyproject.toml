@@ -1,0 +1,55 @@
+[build-system]
+requires = [ "setuptools>=80.9.0", "wheel",]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "salesforce-agent"
+version = "0.1.0"
+description = "Salesforce REST/SOQL/Bulk API 2.0 connector + MCP Server + A2A Server for Agentic AI!"
+readme = "README.md"
+classifiers = [ "Development Status :: 4 - Beta", "License :: OSI Approved :: MIT License", "Environment :: Console", "Operating System :: POSIX :: Linux", "Programming Language :: Python :: 3",]
+requires-python = ">=3.11, <3.15"
+dependencies = [ "agent-utilities>=0.47.0", "httpx>=0.27.0",]
+[[project.authors]]
+name = "Audel Rouhi"
+email = "knucklessg1@gmail.com"
+
+[project.license]
+text = "MIT"
+
+[project.optional-dependencies]
+mcp = [ "agent-utilities[mcp]>=0.47.0",]
+agent = [ "agent-utilities[agent,logfire]>=0.47.0",]
+jwt = [ "cryptography>=42.0.0",]
+all = [ "agent-utilities[mcp,agent,logfire]>=0.47.0", "cryptography>=42.0.0",]
+test = [ "pytest-xdist>=3.6.0", "pytest", "pytest-asyncio", "pytest-cov", "cryptography>=42.0.0",]
+
+[project.scripts]
+salesforce-mcp = "salesforce_agent.mcp_server:mcp_server"
+salesforce-agent = "salesforce_agent.agent_server:agent_server"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+check_untyped_defs = true
+
+[dependency-groups]
+dev = [ "pytest-timeout>=2.4.0",]
+
+[tool.setuptools.package-data]
+salesforce_agent = [ "mcp_config.json",]
+
+[tool.ruff.lint]
+select = [ "E", "F", "I", "UP", "B",]
+ignore = [ "E402", "E501", "B008",]
+
+[tool.setuptools.packages.find]
+where = [ ".",]
+include = [ "salesforce_agent*",]
