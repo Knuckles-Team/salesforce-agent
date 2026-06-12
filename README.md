@@ -155,6 +155,21 @@ See [docs/](docs/index.md) for the full overview, installation, usage, and
 deployment guides; concept registry in [docs/concepts.md](docs/concepts.md)
 (`CONCEPT:SFDC-1.x`).
 
+<!-- BEGIN GENERATED: additional-deployment-options -->
+### Additional Deployment Options
+
+`salesforce-agent` can also run as a **local container** (Docker / Podman / `uv`) or be
+consumed from a **remote deployment**. The
+[Deployment guide](https://knuckles-team.github.io/salesforce-agent/deployment/) has full, copy-paste
+`mcp_config.json` for all four transports — **stdio**, **streamable-http**,
+**local container / uv**, and **remote URL**:
+
+- **Local container / uv** — launch the server from `mcp_config.json` via `uvx`,
+  `docker run`, or `podman run`, or point at a local streamable-http container by `url`.
+- **Remote URL** — connect to a server deployed behind Caddy at
+  `http://salesforce-mcp.arpa/mcp` using the `"url"` key.
+<!-- END GENERATED: additional-deployment-options -->
+
 ## Development
 
 ```bash
