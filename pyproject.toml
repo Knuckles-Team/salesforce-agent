@@ -21,7 +21,7 @@ text = "MIT"
 mcp = [ "agent-utilities[mcp]>=0.48.0",]
 agent = [ "agent-utilities[agent,logfire]>=0.48.0",]
 jwt = [ "cryptography>=42.0.0",]
-all = [ "salesforce-agent[mcp,agent,jwt,logfire]>=0.1.0",]
+all = [ "salesforce-agent[mcp,agent,jwt,logfire]>=0.2.0",]
 test = [ "pytest-xdist>=3.6.0", "pytest", "pytest-asyncio", "pytest-cov", "cryptography>=42.0.0",]
 
 [project.scripts]
