@@ -9,7 +9,7 @@
 ![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/Knuckles-Team/salesforce-agent)
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/salesforce-agent)
 
-*Version: 0.1.0*
+*Version: 0.2.0*
 
 > **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
 > server live on the docs site:
