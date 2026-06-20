@@ -71,9 +71,9 @@ Consolidated, action-routed tools. Each takes `action` and `params_json`. The ta
 |----------|----------------|-------------|
 | `salesforce_admin` | `ADMINTOOL` | Inspect the current user/org and run analytics reports. |
 | `salesforce_bulk` | `BULKTOOL` | Drive Bulk API 2.0 ingest jobs: create, upload, close, results. |
-| `salesforce_describe` | `METADATATOOL` | Discover org schema, record counts, and limits/API usage. |
+| `salesforce_describe` | `DESCRIBETOOL` | Discover org schema, record counts, and limits/API usage. |
 | `salesforce_records` | `RECORDSTOOL` | CRUD on sObject records, composite batches, and collections. |
-| `salesforce_soql` | `QUERYTOOL` | Run SOQL queries (paginated, capped) and SOSL searches. |
+| `salesforce_soql` | `SOQLTOOL` | Run SOQL queries (paginated, capped) and SOSL searches. |
 
 _5 action-routed tools (default `MCP_TOOL_MODE=condensed`). Each is enabled unless its toggle is set false; set `MCP_TOOL_MODE=verbose` (or `both`) for the 1:1 per-operation surface. Auto-generated — do not edit._
 <!-- MCP-TOOLS-TABLE:END -->
