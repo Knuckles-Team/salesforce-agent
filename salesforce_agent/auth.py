@@ -24,13 +24,13 @@ against ``https://login.salesforce.com``.
 
 import base64
 import json
-import os
 import time
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 import httpx
 from agent_utilities.base_utilities import get_logger, to_boolean
+from agent_utilities.core.config import setting
 
 if TYPE_CHECKING:
     from salesforce_agent.api_client import Api
@@ -119,30 +119,30 @@ class SalesforceConfig:
     def from_env(cls) -> "SalesforceConfig":
         """Build configuration from ``SALESFORCE_*`` environment variables."""
         return cls(
-            instance_url=os.getenv("SALESFORCE_INSTANCE_URL", ""),
-            login_url=os.getenv("SALESFORCE_LOGIN_URL", ""),
-            sandbox=to_boolean(os.getenv("SALESFORCE_SANDBOX", "False")),
-            api_version=os.getenv("SALESFORCE_API_VERSION", DEFAULT_API_VERSION),
-            auth_flow=os.getenv("SALESFORCE_AUTH_FLOW", ""),
-            client_id=os.getenv("SALESFORCE_CLIENT_ID", ""),
-            client_secret=os.getenv("SALESFORCE_CLIENT_SECRET", ""),
-            refresh_token=os.getenv("SALESFORCE_REFRESH_TOKEN", ""),
-            access_token=os.getenv("SALESFORCE_ACCESS_TOKEN", ""),
-            jwt_subject=os.getenv("SALESFORCE_JWT_SUBJECT", ""),
-            jwt_private_key=os.getenv("SALESFORCE_JWT_PRIVATE_KEY", ""),
-            jwt_private_key_path=os.getenv("SALESFORCE_JWT_PRIVATE_KEY_PATH", ""),
-            jwt_audience=os.getenv("SALESFORCE_JWT_AUDIENCE", ""),
-            timeout=float(os.getenv("SALESFORCE_TIMEOUT", "30")),
-            verify=to_boolean(os.getenv("SALESFORCE_SSL_VERIFY", "True")),
-            token_ttl_seconds=int(os.getenv("SALESFORCE_TOKEN_TTL_SECONDS", "1800")),
+            instance_url=setting("SALESFORCE_INSTANCE_URL", ""),
+            login_url=setting("SALESFORCE_LOGIN_URL", ""),
+            sandbox=to_boolean(setting("SALESFORCE_SANDBOX", "False")),
+            api_version=setting("SALESFORCE_API_VERSION", DEFAULT_API_VERSION),
+            auth_flow=setting("SALESFORCE_AUTH_FLOW", ""),
+            client_id=setting("SALESFORCE_CLIENT_ID", ""),
+            client_secret=setting("SALESFORCE_CLIENT_SECRET", ""),
+            refresh_token=setting("SALESFORCE_REFRESH_TOKEN", ""),
+            access_token=setting("SALESFORCE_ACCESS_TOKEN", ""),
+            jwt_subject=setting("SALESFORCE_JWT_SUBJECT", ""),
+            jwt_private_key=setting("SALESFORCE_JWT_PRIVATE_KEY", ""),
+            jwt_private_key_path=setting("SALESFORCE_JWT_PRIVATE_KEY_PATH", ""),
+            jwt_audience=setting("SALESFORCE_JWT_AUDIENCE", ""),
+            timeout=float(setting("SALESFORCE_TIMEOUT", "30")),
+            verify=to_boolean(setting("SALESFORCE_SSL_VERIFY", "True")),
+            token_ttl_seconds=int(setting("SALESFORCE_TOKEN_TTL_SECONDS", "1800")),
             allow_destructive=to_boolean(
-                os.getenv("SALESFORCE_ALLOW_DESTRUCTIVE", "False")
+                setting("SALESFORCE_ALLOW_DESTRUCTIVE", "False")
             ),
-            max_query_records=int(os.getenv("SALESFORCE_MAX_QUERY_RECORDS", "2000")),
+            max_query_records=int(setting("SALESFORCE_MAX_QUERY_RECORDS", "2000")),
             bulk_results_max_bytes=int(
-                os.getenv("SALESFORCE_BULK_RESULTS_MAX_BYTES", "5000000")
+                setting("SALESFORCE_BULK_RESULTS_MAX_BYTES", "5000000")
             ),
-            report_max_rows=int(os.getenv("SALESFORCE_REPORT_MAX_ROWS", "2000")),
+            report_max_rows=int(setting("SALESFORCE_REPORT_MAX_ROWS", "2000")),
         )
 
 
