@@ -63,15 +63,20 @@ Prebuilt Docker image: `knucklessg1/salesforce-agent:latest`.
 
 ## MCP Tools
 
-Five consolidated, action-routed tools. Each takes `action` and `params_json`.
+Consolidated, action-routed tools. Each takes `action` and `params_json`. The table below is auto-generated from the MCP server — do not edit by hand.
 
-| Tool | Actions | Toggle |
-|------|---------|--------|
-| `salesforce_soql` | `query` (auto-pagination via `nextRecordsUrl`, capped), `query_all` (deleted/archived), `explain`, `search` (SOSL) | `SOQLTOOL` |
-| `salesforce_records` | `get` (field selection), `create`, `update`, `upsert` (external id), `delete`*, `composite` (≤25 subrequests), `collections_create`/`collections_update` (≤200 records), `collections_delete`* | `RECORDSTOOL` |
-| `salesforce_describe` | `global`, `sobject` (fields/relationships/picklists), `record_counts`, `limits` (API usage) | `DESCRIBETOOL` |
-| `salesforce_bulk` | `create_job` (insert/update/upsert/`delete`*/`hardDelete`*), `upload` (CSV), `close`, `abort`, `status`, `list_jobs`, `delete_job`, `results` (successful/failed/unprocessed, size-capped) | `BULKTOOL` |
-| `salesforce_admin` | `user_info`, `org_info`, `list_reports`, `run_report` (sync, capped). Listing/running Flows is **out of scope for v1**. | `ADMINTOOL` |
+<!-- MCP-TOOLS-TABLE:START -->
+
+| MCP Tool | Toggle Env Var | Description |
+|----------|----------------|-------------|
+| `salesforce_admin` | `ADMINTOOL` | Inspect the current user/org and run analytics reports. |
+| `salesforce_bulk` | `BULKTOOL` | Drive Bulk API 2.0 ingest jobs: create, upload, close, results. |
+| `salesforce_describe` | `METADATATOOL` | Discover org schema, record counts, and limits/API usage. |
+| `salesforce_records` | `RECORDSTOOL` | CRUD on sObject records, composite batches, and collections. |
+| `salesforce_soql` | `QUERYTOOL` | Run SOQL queries (paginated, capped) and SOSL searches. |
+
+_5 action-routed tools (default `MCP_TOOL_MODE=condensed`). Each is enabled unless its toggle is set false; set `MCP_TOOL_MODE=verbose` (or `both`) for the 1:1 per-operation surface. Auto-generated — do not edit._
+<!-- MCP-TOOLS-TABLE:END -->
 
 `*` Destructive — blocked unless `SALESFORCE_ALLOW_DESTRUCTIVE=true`.
 
@@ -203,3 +208,4 @@ to just this package. Ask your agent to **"deploy `salesforce-agent` with agent-
 Secrets are read-existing + seeded via `vault_sync` — you are only prompted for what's missing.
 
 <!-- END agent-os-genesis-deploy -->
+
