@@ -208,4 +208,3 @@ to just this package. Ask your agent to **"deploy `salesforce-agent` with agent-
 Secrets are read-existing + seeded via `vault_sync` — you are only prompted for what's missing.
 
 <!-- END agent-os-genesis-deploy -->
-
