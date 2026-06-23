@@ -1,6 +1,6 @@
 services:
   salesforce-agent-mcp:
-    image: knucklessg1/salesforce-agent:latest
+    image: knucklessg1/salesforce-agent:mcp
     container_name: salesforce-agent-mcp
     hostname: salesforce-agent-mcp
     restart: always
