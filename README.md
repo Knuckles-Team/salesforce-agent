@@ -51,15 +51,57 @@ graph TD
 
 ## Installation
 
+> **Install the slim `[mcp]` extra to run the MCP server.** `salesforce-agent[mcp]`
+> pulls only the FastMCP / FastAPI tooling (`agent-utilities[mcp]`). It deliberately
+> **excludes** the heavy agent runtime (the epistemic-graph engine, `pydantic-ai`,
+> `dspy`, `llama-index`, `tree-sitter`), so `uvx`/container installs are dramatically
+> smaller and faster. Use the full `[agent]` extra only when you need the integrated
+> Pydantic AI agent.
+
+Pick the extra that matches what you want to run:
+
+| Extra | Installs | Use when |
+|-------|----------|----------|
+| `salesforce-agent` (core) | Owned thin httpx Salesforce client (no server tooling) | You only use the **Python `Api` client** |
+| `salesforce-agent[mcp]` | Slim MCP server (`agent-utilities[mcp]` — FastMCP/FastAPI) | You run the **MCP server** (smallest server install / image) |
+| `salesforce-agent[agent]` | Full agent runtime (`agent-utilities[agent,logfire]` — Pydantic AI + the epistemic-graph engine) | You run the **integrated agent** |
+| `salesforce-agent[jwt]` | + `cryptography` for the JWT bearer flow | You authenticate via OAuth2 JWT bearer |
+| `salesforce-agent[all]` | Everything (`mcp` + `agent` + `jwt` + `logfire`) | Development / all surfaces |
+
 ```bash
 pip install salesforce-agent            # core client only
-pip install salesforce-agent[mcp]       # + FastMCP server
-pip install salesforce-agent[agent]     # + Pydantic AI A2A agent server
-pip install salesforce-agent[jwt]       # + cryptography for the JWT bearer flow
-pip install salesforce-agent[all]       # everything
+pip install "salesforce-agent[mcp]"     # + slim FastMCP server
+pip install "salesforce-agent[agent]"   # + Pydantic AI A2A agent (epistemic-graph engine)
+pip install "salesforce-agent[jwt]"     # + cryptography for the JWT bearer flow
+pip install "salesforce-agent[all]"     # everything
 ```
 
-Prebuilt Docker image: `knucklessg1/salesforce-agent:latest`.
+### Container images (`:mcp` vs `:agent`)
+
+One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `--target`:
+
+| Image tag | Build target | Contents | Entrypoint |
+|-----------|--------------|----------|------------|
+| `knucklessg1/salesforce-agent:mcp` | `--target mcp` | `salesforce-agent[mcp]` — **slim**, no engine/`pydantic-ai`/`dspy`/`llama-index`/`tree-sitter` | `salesforce-mcp` |
+| `knucklessg1/salesforce-agent:latest` | `--target agent` (default) | `salesforce-agent[agent]` — **full** agent runtime + epistemic-graph engine | `salesforce-agent` |
+
+```bash
+docker build --target mcp   -t knucklessg1/salesforce-agent:mcp    docker/   # slim MCP server
+docker build --target agent -t knucklessg1/salesforce-agent:latest docker/   # full agent
+```
+
+`docker/mcp.compose.yml` runs the slim `:mcp` server; `docker/agent.compose.yml` runs the
+agent (`:latest`) with a co-located `:mcp` sidecar.
+
+### Knowledge-graph database (`epistemic-graph`)
+
+The **full agent** (`[agent]` / `:latest`) embeds the **epistemic-graph** engine (pulled in
+transitively via `agent-utilities[agent]`). For production — or to share one knowledge graph
+across multiple agents — run **epistemic-graph as its own database container** and point the
+agent at it instead of embedding it. Deployment recipes (single-node + Raft HA), connection
+config, and the full database architecture (with diagrams) are documented in the
+[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
+The slim `[mcp]` server and the core client do **not** require the database.
 
 ## MCP Tools
 
