@@ -137,6 +137,72 @@ cached with expiry tracking and refreshed transparently (plus one retry on
 
 ## Environment Variables
 
+<!-- ENV-VARS-TABLE:START -->
+
+#### Package environment variables
+
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `HOST` | `0.0.0.0` |  |
+| `PORT` | `8000` |  |
+| `TRANSPORT` | `stdio` | options: stdio, streamable-http, sse |
+| `ENABLE_OTEL` | `True` |  |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:8080/api/public/otel` |  |
+| `OTEL_EXPORTER_OTLP_PUBLIC_KEY` | `pk-...` |  |
+| `OTEL_EXPORTER_OTLP_SECRET_KEY` | `sk-...` |  |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` |  |
+| `EUNOMIA_TYPE` | `none` | options: none, embedded, remote |
+| `EUNOMIA_POLICY_FILE` | `mcp_policies.json` |  |
+| `EUNOMIA_REMOTE_URL` | `http://eunomia-server:8000` |  |
+| `SALESFORCE_INSTANCE_URL` | `https://yourorg.my.salesforce.com` | My Domain instance URL (required for client_credentials and static tokens) |
+| `SALESFORCE_LOGIN_URL` | — | Override the OAuth login host (otherwise derived from SALESFORCE_SANDBOX) |
+| `SALESFORCE_SANDBOX` | `False` | Sandbox org? true -> https://test.salesforce.com |
+| `SALESFORCE_API_VERSION` | `v62.0` | REST API version |
+| `SALESFORCE_SSL_VERIFY` | `True` | SSL verification flag |
+| `SALESFORCE_TIMEOUT` | `30` | HTTP timeout in seconds |
+| `SALESFORCE_AUTH_FLOW` | — | Explicit override: client_credentials | refresh_token | jwt_bearer | access_token |
+| `SALESFORCE_CLIENT_ID` | — | Connected App consumer key/secret (client_credentials, refresh_token, jwt_bearer) |
+| `SALESFORCE_CLIENT_SECRET` | — |  |
+| `SALESFORCE_REFRESH_TOKEN` | — | Refresh-token flow |
+| `SALESFORCE_JWT_SUBJECT` | `integration.user@yourorg.com` | JWT bearer flow (pip install salesforce-agent[jwt]) |
+| `SALESFORCE_JWT_PRIVATE_KEY` | — |  |
+| `SALESFORCE_JWT_PRIVATE_KEY_PATH` | — |  |
+| `SALESFORCE_JWT_AUDIENCE` | — |  |
+| `SALESFORCE_ACCESS_TOKEN` | — | Static access token (testing / short-lived sessions) |
+| `SALESFORCE_TOKEN_TTL_SECONDS` | `1800` | Cached-token TTL when the token response has no expires_in |
+| `SALESFORCE_ALLOW_DESTRUCTIVE` | `False` | Gate for record delete, collections delete, and bulk delete/hardDelete jobs |
+| `SALESFORCE_MAX_QUERY_RECORDS` | `2000` | Per-call cap on auto-paginated SOQL results |
+| `SALESFORCE_BULK_RESULTS_MAX_BYTES` | `5000000` | Per-call cap on Bulk API 2.0 result downloads (bytes) |
+| `SALESFORCE_REPORT_MAX_ROWS` | `2000` | Synchronous report row note (Salesforce platform caps at 2000 detail rows) |
+| `SOQLTOOL` | `True` |  |
+| `RECORDSTOOL` | `True` |  |
+| `DESCRIBETOOL` | `True` |  |
+| `BULKTOOL` | `True` |  |
+| `ADMINTOOL` | `True` |  |
+
+#### Inherited agent-utilities variables (apply to every connector)
+
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `MCP_TOOL_MODE` | `condensed` | Tool surface: `condensed` | `verbose` | `both` |
+| `MCP_ENABLED_TOOLS` | — | Comma-separated tool allow-list |
+| `MCP_DISABLED_TOOLS` | — | Comma-separated tool deny-list |
+| `MCP_ENABLED_TAGS` | — | Comma-separated tag allow-list |
+| `MCP_DISABLED_TAGS` | — | Comma-separated tag deny-list |
+| `MCP_CLIENT_AUTH` | — | Outbound MCP auth (`oidc-client-credentials` for fleet calls) |
+| `OIDC_CLIENT_ID` | — | OIDC client id (service-account auth) |
+| `OIDC_CLIENT_SECRET` | — | OIDC client secret (service-account auth) |
+| `DEBUG` | `False` | Verbose logging |
+| `PYTHONUNBUFFERED` | `1` | Unbuffered stdout (recommended in containers) |
+| `MCP_URL` | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to |
+| `PROVIDER` | `openai` | LLM provider for the agent |
+| `MODEL_ID` | `gpt-4o` | Model id for the agent |
+| `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
+
+_36 package + 14 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+<!-- ENV-VARS-TABLE:END -->
+
+
 | Variable | Default | Purpose |
 |----------|---------|---------|
 | `SALESFORCE_INSTANCE_URL` | — | My Domain instance URL (required for client-credentials and static tokens) |
