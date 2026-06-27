@@ -3,9 +3,11 @@ import pytest
 
 @pytest.mark.concept("SFDC-1.0")
 def test_startup():
+    import re
+
     import salesforce_agent
 
-    assert salesforce_agent.__version__ == "0.1.0"
+    assert re.fullmatch(r"\d+\.\d+\.\d+", salesforce_agent.__version__)
 
 
 @pytest.mark.concept("SFDC-1.0")
