@@ -109,6 +109,8 @@ Consolidated, action-routed tools. Each takes `action` and `params_json`. The ta
 
 <!-- MCP-TOOLS-TABLE:START -->
 
+#### Condensed action-routed tools (default — `MCP_TOOL_MODE=condensed`)
+
 | MCP Tool | Toggle Env Var | Description |
 |----------|----------------|-------------|
 | `salesforce_admin` | `ADMINTOOL` | Inspect the current user/org and run analytics reports. |
@@ -117,7 +119,18 @@ Consolidated, action-routed tools. Each takes `action` and `params_json`. The ta
 | `salesforce_records` | `RECORDSTOOL` | CRUD on sObject records, composite batches, and collections. |
 | `salesforce_soql` | `SOQLTOOL` | Run SOQL queries (paginated, capped) and SOSL searches. |
 
-_5 action-routed tools (default `MCP_TOOL_MODE=condensed`). Each is enabled unless its toggle is set false; set `MCP_TOOL_MODE=verbose` (or `both`) for the 1:1 per-operation surface. Auto-generated — do not edit._
+#### Verbose 1:1 API-mapped tools (`MCP_TOOL_MODE=verbose` or `both`)
+
+<details>
+<summary>1 per-operation tools — one per public API method (click to expand)</summary>
+
+| MCP Tool | Toggle Env Var | Description |
+|----------|----------------|-------------|
+| `salesforce_close` | `APITOOL` | Invoke the close operation. |
+
+</details>
+
+_5 action-routed tool(s) (default) · 1 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (`condensed` default · `verbose` 1:1 · `both`). Auto-generated — do not edit._
 <!-- MCP-TOOLS-TABLE:END -->
 
 `*` Destructive — blocked unless `SALESFORCE_ALLOW_DESTRUCTIVE=true`.
@@ -174,6 +187,7 @@ cached with expiry tracking and refreshed transparently (plus one retry on
 | `SALESFORCE_MAX_QUERY_RECORDS` | `2000` | Per-call cap on auto-paginated SOQL results |
 | `SALESFORCE_BULK_RESULTS_MAX_BYTES` | `5000000` | Per-call cap on Bulk API 2.0 result downloads (bytes) |
 | `SALESFORCE_REPORT_MAX_ROWS` | `2000` | Synchronous report row note (Salesforce platform caps at 2000 detail rows) |
+| `SALESFORCETOOL` | `True` | Master toggle for the whole Salesforce tool surface |
 | `SOQLTOOL` | `True` |  |
 | `RECORDSTOOL` | `True` |  |
 | `DESCRIBETOOL` | `True` |  |
@@ -199,7 +213,7 @@ cached with expiry tracking and refreshed transparently (plus one retry on
 | `MODEL_ID` | `gpt-4o` | Model id for the agent |
 | `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
 
-_36 package + 14 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+_37 package + 14 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
 
 

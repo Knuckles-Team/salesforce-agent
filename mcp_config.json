@@ -7,6 +7,7 @@
         "salesforce-mcp"
       ],
       "env": {
+        "MCP_TOOL_MODE": "condensed",
         "FASTMCP_LOG_LEVEL": "<YOUR_FASTMCP_LOG_LEVEL>",
         "SALESFORCE_INSTANCE_URL": "<YOUR_SALESFORCE_INSTANCE_URL>",
         "SALESFORCE_LOGIN_URL": "<YOUR_SALESFORCE_LOGIN_URL>",
