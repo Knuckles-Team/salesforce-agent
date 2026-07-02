@@ -1,7 +1,7 @@
 {
   "name": "salesforce-agent",
   "type": "agent",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Salesforce agent: SOQL/SOSL queries, sObject record CRUD with composite/collections batching, metadata describe, Bulk API 2.0 ingest, and org administration over the Salesforce REST API.",
   "url": "https://github.com/Knuckles-Team/salesforce-agent/tree/main",
   "license": "MIT",
