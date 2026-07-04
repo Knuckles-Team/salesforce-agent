@@ -31,6 +31,12 @@ salesforce-agent = "salesforce_agent.agent_server:agent_server"
 [project.entry-points."agent_utilities.skill_providers"]
 salesforce-agent = "salesforce_agent.skills"
 
+[project.entry-points."agent_utilities.ontology_providers"]
+salesforce-agent = "salesforce_agent.ontology"
+
+[project.entry-points."agent_utilities.source_connector_providers"]
+salesforce-agent = "salesforce_agent.connectors"
+
 [project.entry-points."agent_utilities.prompt_providers"]
 salesforce-agent = "salesforce_agent.prompts"
 
@@ -50,7 +56,7 @@ check_untyped_defs = true
 dev = [ "pytest-timeout>=2.4.0",]
 
 [tool.setuptools.package-data]
-salesforce_agent = [ "mcp_config.json", "agent_data/**", "prompts/**", "skills/**",]
+salesforce_agent = [ "mcp_config.json", "agent_data/**", "prompts/**", "skills/**", "ontology/**", "connectors/**",]
 
 [tool.ruff.lint]
 select = [ "E", "F", "I", "UP", "B",]

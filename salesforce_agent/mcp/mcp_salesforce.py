@@ -250,6 +250,48 @@ def register_admin_tools(mcp: FastMCP) -> None:
         raise ValueError(f"Unknown admin action: {action!r}.")
 
 
+def register_ingest_tools(mcp: FastMCP) -> None:
+    """Register the native knowledge-graph CRM ingestion tool (Wire-First)."""
+
+    @mcp.tool(tags={"misc", "kg"})
+    async def salesforce_ingest_crm(
+        params_json: str = Field(
+            default="{}",
+            description=(
+                'JSON args. {"sobjects": ["Account", "Contact", '
+                '"Opportunity", "Lead"], "max_records": 500}. Defaults to '
+                "all four core CRM objects when omitted."
+            ),
+        ),
+    ) -> Any:
+        """Natively ingest Salesforce CRM records into epistemic-graph as typed nodes.
+
+        Runs the per-sObject SOQL SELECT for each requested object and pushes the
+        records (with their :worksAtAccount / :opportunityForAccount /
+        :convertedToAccount / :ownedBy links) into the knowledge graph as typed
+        :Account / :Contact / :Opportunity / :Lead (+ :Person owner) nodes via the
+        fast engine client. Best-effort: ``ingested`` is ``null`` when no engine is
+        reachable. CONCEPT:AU-KG.ingest.enterprise-source-extractor.
+        """
+        from salesforce_agent.kg_ingest import INGEST_QUERIES, ingest_records
+
+        api = get_client()
+        p = _p(params_json)
+        sobjects = p.get("sobjects") or list(INGEST_QUERIES)
+        max_records = p.get("max_records")
+        summary: dict[str, Any] = {}
+        for sobject in sobjects:
+            soql = INGEST_QUERIES.get(sobject)
+            if soql is None:
+                summary[sobject] = {"error": "no ingest query for sObject"}
+                continue
+            result = api.soql.query(soql, max_records=max_records)
+            records = result.get("records", [])
+            ingested = ingest_records(sobject, records)
+            summary[sobject] = {"listed": len(records), "ingested": ingested}
+        return summary
+
+
 def register_salesforce_tools(mcp: FastMCP) -> None:
     """Register every Salesforce tool group on one FastMCP server."""
     register_soql_tools(mcp)
@@ -257,3 +299,4 @@ def register_salesforce_tools(mcp: FastMCP) -> None:
     register_describe_tools(mcp)
     register_bulk_tools(mcp)
     register_admin_tools(mcp)
+    register_ingest_tools(mcp)

@@ -1,0 +1,135 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix : <http://knuckles.team/kg#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Salesforce CRM ontology — the core sales objects (Account, Contact, Opportunity,
+# Lead) plus Case and Campaign, and the relationships that tie them together. All
+# classes and properties live in the SHARED `:` (kg#) namespace; only the owl:Ontology
+# node gets the per-package IRI. Backs the salesforce-agent MCP tool surface
+# (salesforce_soql / salesforce_records / salesforce_describe / salesforce_ingest_crm).
+# :Person (shared) is REUSED for the owning Salesforce User — never redefined here.
+
+:Account a owl:Class ;
+    rdfs:label "Account" ;
+    rdfs:comment "A company or organization tracked in Salesforce CRM (sObject Account)." .
+
+:Contact a owl:Class ;
+    rdfs:label "Contact" ;
+    rdfs:comment "An individual person associated with an Account (sObject Contact)." .
+
+:Opportunity a owl:Class ;
+    rdfs:label "Opportunity" ;
+    rdfs:comment "A potential revenue-generating sale/deal in the pipeline (sObject Opportunity)." .
+
+:Lead a owl:Class ;
+    rdfs:label "Lead" ;
+    rdfs:comment "An unqualified prospect not yet converted into an Account/Contact/Opportunity (sObject Lead)." .
+
+:Case a owl:Class ;
+    rdfs:label "Case" ;
+    rdfs:comment "A customer service/support ticket linked to an Account or Contact (sObject Case)." .
+
+:Campaign a owl:Class ;
+    rdfs:label "Campaign" ;
+    rdfs:comment "A marketing campaign that generates Leads and influences Opportunities (sObject Campaign)." .
+
+# --- links (owl:ObjectProperty) ---
+
+:worksAtAccount a owl:ObjectProperty ;
+    rdfs:label "works at account" ;
+    rdfs:comment "Links a Contact to the Account it belongs to (Contact.AccountId)." ;
+    rdfs:domain :Contact ;
+    rdfs:range :Account .
+
+:opportunityForAccount a owl:ObjectProperty ;
+    rdfs:label "opportunity for account" ;
+    rdfs:comment "Links an Opportunity to the Account the deal is with (Opportunity.AccountId)." ;
+    rdfs:domain :Opportunity ;
+    rdfs:range :Account .
+
+:primaryContact a owl:ObjectProperty ;
+    rdfs:label "primary contact" ;
+    rdfs:comment "Links an Opportunity or Case to its primary Contact." ;
+    rdfs:range :Contact .
+
+:convertedToAccount a owl:ObjectProperty ;
+    rdfs:label "converted to account" ;
+    rdfs:comment "Links a converted Lead to the Account created from it (Lead.ConvertedAccountId)." ;
+    rdfs:domain :Lead ;
+    rdfs:range :Account .
+
+:convertedToOpportunity a owl:ObjectProperty ;
+    rdfs:label "converted to opportunity" ;
+    rdfs:comment "Links a converted Lead to the Opportunity created from it (Lead.ConvertedOpportunityId)." ;
+    rdfs:domain :Lead ;
+    rdfs:range :Opportunity .
+
+:caseForAccount a owl:ObjectProperty ;
+    rdfs:label "case for account" ;
+    rdfs:comment "Links a Case to the Account it was raised against (Case.AccountId)." ;
+    rdfs:domain :Case ;
+    rdfs:range :Account .
+
+:sourcedByCampaign a owl:ObjectProperty ;
+    rdfs:label "sourced by campaign" ;
+    rdfs:comment "Links a Lead or Opportunity to the Campaign that sourced it." ;
+    rdfs:range :Campaign .
+
+:ownedBy a owl:ObjectProperty ;
+    rdfs:label "owned by" ;
+    rdfs:comment "Links a CRM record to the Salesforce User (:Person) that owns it (OwnerId)." ;
+    rdfs:range :Person .
+
+# --- fields (owl:DatatypeProperty) ---
+
+:salesforceId a owl:DatatypeProperty ;
+    rdfs:label "salesforce id" ;
+    rdfs:comment "The 15/18-char Salesforce record Id of the object." ;
+    rdfs:range xsd:string .
+
+:industry a owl:DatatypeProperty ;
+    rdfs:label "industry" ;
+    rdfs:comment "Industry classification of an Account (Account.Industry)." ;
+    rdfs:domain :Account ;
+    rdfs:range xsd:string .
+
+:stageName a owl:DatatypeProperty ;
+    rdfs:label "stage name" ;
+    rdfs:comment "Sales-pipeline stage of an Opportunity (Opportunity.StageName)." ;
+    rdfs:domain :Opportunity ;
+    rdfs:range xsd:string .
+
+:amount a owl:DatatypeProperty ;
+    rdfs:label "amount" ;
+    rdfs:comment "Monetary amount of an Opportunity (Opportunity.Amount)." ;
+    rdfs:domain :Opportunity ;
+    rdfs:range xsd:decimal .
+
+:closeDate a owl:DatatypeProperty ;
+    rdfs:label "close date" ;
+    rdfs:comment "Expected/actual close date of an Opportunity (Opportunity.CloseDate)." ;
+    rdfs:domain :Opportunity ;
+    rdfs:range xsd:date .
+
+:leadStatus a owl:DatatypeProperty ;
+    rdfs:label "lead status" ;
+    rdfs:comment "Qualification status of a Lead (Lead.Status)." ;
+    rdfs:domain :Lead ;
+    rdfs:range xsd:string .
+
+:email a owl:DatatypeProperty ;
+    rdfs:label "email" ;
+    rdfs:comment "Email address of a Contact or Lead." ;
+    rdfs:range xsd:string .
+
+<http://knuckles.team/kg/salesforce> a owl:Ontology ;
+    rdfs:label "Salesforce CRM Ontology" ;
+    rdfs:comment """Salesforce CRM model — accounts, contacts, opportunities, leads,
+    cases and campaigns with their sales and service relationships — federated into
+    the agent-utilities knowledge-graph hub. Reuses the shared :Person for the owning
+    Salesforce User.""" ;
+    owl:imports <http://knuckles.team/kg/enterprise> .

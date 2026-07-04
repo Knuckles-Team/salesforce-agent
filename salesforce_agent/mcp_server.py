@@ -18,6 +18,7 @@ from salesforce_agent.mcp.mcp_salesforce import (
     register_admin_tools,
     register_bulk_tools,
     register_describe_tools,
+    register_ingest_tools,
     register_records_tools,
     register_soql_tools,
 )
@@ -54,6 +55,7 @@ def get_mcp_instance() -> tuple[Any, ...]:
             register_describe_tools,
             register_bulk_tools,
             register_admin_tools,
+            register_ingest_tools,
         ],
     )
 
