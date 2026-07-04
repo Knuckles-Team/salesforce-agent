@@ -1,4 +1,4 @@
-"""CONCEPT:SFDC-1.2 Org administration: identity, org info, and analytics.
+"""CONCEPT:SF-OS.governance.sfdc-2 Org administration: identity, org info, and analytics.
 
 Resources:
 - UserInfo (OIDC): https://help.salesforce.com/s/articleView?id=sf.remoteaccess_using_userinfo_endpoint.htm

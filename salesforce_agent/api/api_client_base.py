@@ -1,4 +1,4 @@
-"""CONCEPT:SFDC-1.0 Shared httpx base client for the Salesforce REST API.
+"""CONCEPT:SF-OS.governance.sfdc Shared httpx base client for the Salesforce REST API.
 
 Owned thin client (no ``simple-salesforce``): a single httpx.Client that
 attaches the cached bearer token, maps failures to typed errors

@@ -1,4 +1,4 @@
-"""CONCEPT:SFDC-1.0 Typed Salesforce error envelope mapping.
+"""CONCEPT:SF-OS.governance.sfdc Typed Salesforce error envelope mapping.
 
 Salesforce REST resources report failures as a JSON *array* of error objects
 (``[{"message": ..., "errorCode": ..., "fields": [...]}]``), while the OAuth2

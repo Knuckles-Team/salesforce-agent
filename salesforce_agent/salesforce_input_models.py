@@ -1,4 +1,4 @@
-"""CONCEPT:SFDC-1.2 Typed input models for the Salesforce tool surface.
+"""CONCEPT:SF-OS.governance.sfdc-2 Typed input models for the Salesforce tool surface.
 
 Pydantic models mirroring the ``params_json`` contracts of the action-routed
 MCP tools in :mod:`salesforce_agent.mcp.mcp_salesforce`. Programmatic callers

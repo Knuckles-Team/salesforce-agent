@@ -1,4 +1,4 @@
-"""CONCEPT:SFDC-1.4 Bulk API 2.0 ingest job client (CSV in, CSV results out).
+"""CONCEPT:SF-OS.governance.sfdc-3 Bulk API 2.0 ingest job client (CSV in, CSV results out).
 
 Resources (Bulk API 2.0 developer guide):
 - Create job:   https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/create_job.htm
@@ -7,7 +7,7 @@ Resources (Bulk API 2.0 developer guide):
 - Job info:     https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/get_job_info.htm
 - Results:      https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/get_job_successful_results.htm
 
-CONCEPT:SFDC-1.3 — ``delete``/``hardDelete`` ingest jobs are gated by
+CONCEPT:SF-OS.governance.destructive-operations-delete-collections — ``delete``/``hardDelete`` ingest jobs are gated by
 ``allow_destructive``; result downloads are size-capped
 (``SALESFORCE_BULK_RESULTS_MAX_BYTES``).
 """

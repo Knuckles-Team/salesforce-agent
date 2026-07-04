@@ -280,7 +280,7 @@ DNS guidance.
 
 See [docs/](docs/index.md) for the full overview, installation, usage, and
 deployment guides; concept registry in [docs/concepts.md](docs/concepts.md)
-(`CONCEPT:SFDC-1.x`).
+(`CONCEPT:SF-OS.config.sfdc-x`).
 
 <!-- BEGIN GENERATED: additional-deployment-options -->
 ### Additional Deployment Options

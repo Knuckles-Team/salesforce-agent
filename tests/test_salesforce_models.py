@@ -1,4 +1,4 @@
-"""CONCEPT:SFDC-1.2 Input-model contracts for the action-routed tool surface."""
+"""CONCEPT:SF-OS.governance.sfdc-2 Input-model contracts for the action-routed tool surface."""
 
 import json
 
@@ -19,7 +19,7 @@ from salesforce_agent.salesforce_input_models import (
 )
 
 
-@pytest.mark.concept("SFDC-1.2")
+@pytest.mark.concept("SF-OS.governance.sfdc-2")
 class TestInputModels:
     def test_soql_query_round_trips_to_params_json(self):
         model = SoqlQueryInput(soql="SELECT Id FROM Account", max_records=100)

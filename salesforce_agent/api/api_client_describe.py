@@ -1,4 +1,4 @@
-"""CONCEPT:SFDC-1.2 Metadata describe, record counts, and org limits client.
+"""CONCEPT:SF-OS.governance.sfdc-2 Metadata describe, record counts, and org limits client.
 
 Resources:
 - Describe Global:  https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_describeGlobal.htm

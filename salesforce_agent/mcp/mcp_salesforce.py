@@ -1,9 +1,9 @@
-"""CONCEPT:SFDC-1.2 Action-routed MCP tools over the Salesforce API clients.
+"""CONCEPT:SF-OS.governance.sfdc-2 Action-routed MCP tools over the Salesforce API clients.
 
 Each tool is a thin shim: it parses params, picks the resource client on the
 :class:`~salesforce_agent.api_client.Api` facade, calls the matching method,
 and returns the result. All API surface (pagination, batching limits,
-destructive gating CONCEPT:SFDC-1.3, size caps) lives in
+destructive gating CONCEPT:SF-OS.governance.destructive-operations-delete-collections, size caps) lives in
 ``salesforce_agent.api`` — these tools add no business logic.
 """
 

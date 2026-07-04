@@ -1,4 +1,4 @@
-"""CONCEPT:SFDC-1.0 Salesforce API facade — one client, five surfaces.
+"""CONCEPT:SF-OS.governance.sfdc Salesforce API facade — one client, five surfaces.
 
 ``Api`` wires the auth/token layer and the shared httpx base into the five
 resource clients (``soql``, ``records``, ``describe``, ``bulk``, ``admin``).

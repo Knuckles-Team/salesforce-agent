@@ -1,4 +1,4 @@
-"""CONCEPT:SFDC-1.2 sObject record CRUD, composite, and collections client.
+"""CONCEPT:SF-OS.governance.sfdc-2 sObject record CRUD, composite, and collections client.
 
 Resources:
 - sObject rows:    https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_sobject_retrieve.htm
@@ -6,7 +6,7 @@ Resources:
 - Composite:       https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_composite_composite.htm
 - Collections:     https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_composite_sobjects_collections.htm
 
-CONCEPT:SFDC-1.3 — destructive operations (delete / collections delete, and
+CONCEPT:SF-OS.governance.destructive-operations-delete-collections — destructive operations (delete / collections delete, and
 DELETE subrequests inside composite) are refused unless
 ``allow_destructive`` is enabled.
 """

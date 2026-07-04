@@ -1,4 +1,4 @@
-"""CONCEPT:SFDC-1.2 SOQL / SOSL query client with auto-pagination.
+"""CONCEPT:SF-OS.governance.sfdc-2 SOQL / SOSL query client with auto-pagination.
 
 Resources:
 - Query:    https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_query.htm

@@ -1,4 +1,4 @@
-"""CONCEPT:SFDC-1.1 Salesforce OAuth2 flows, token cache, and client factory.
+"""CONCEPT:SF-OS.identity.sfdc Salesforce OAuth2 flows, token cache, and client factory.
 
 Implements three server-to-server OAuth2 flows against the Salesforce token
 endpoint (``/services/oauth2/token``), plus a static access-token mode:

@@ -1,4 +1,4 @@
-"""CONCEPT:SFDC-1.1 API client request/response behavior (mocked transport)."""
+"""CONCEPT:SF-OS.identity.sfdc API client request/response behavior (mocked transport)."""
 
 import pytest
 
@@ -6,7 +6,7 @@ from salesforce_agent.salesforce_response_models import SalesforceError
 from tests.conftest import make_api
 
 
-@pytest.mark.concept("SFDC-1.1")
+@pytest.mark.concept("SF-OS.identity.sfdc")
 class TestApiWrapper:
     def test_request_sends_bearer_token(self, fake):
         api = make_api(fake)
