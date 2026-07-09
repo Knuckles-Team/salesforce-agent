@@ -1,5 +1,6 @@
 ---
 name: salesforce-record-management
+skill_type: skill
 description: >-
   Create, update, upsert, and batch Salesforce sObject records over the
   salesforce-agent MCP server — single-record CRUD, composite (up to 25 dependent

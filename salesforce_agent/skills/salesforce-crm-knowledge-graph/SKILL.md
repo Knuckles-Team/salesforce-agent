@@ -1,5 +1,6 @@
 ---
 name: salesforce-crm-knowledge-graph
+skill_type: skill
 description: >-
   Natively ingest Salesforce CRM objects into the epistemic-graph knowledge graph as
   typed OWL nodes over the salesforce-agent MCP server — accounts, contacts,

@@ -1,5 +1,6 @@
 ---
 name: salesforce-soql-query
+skill_type: skill
 description: >-
   Query Salesforce data with SOQL/SOSL over the salesforce-agent MCP server — run
   bounded SOQL queries (auto-paginated via nextRecordsUrl), queryAll over
