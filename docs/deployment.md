@@ -3,146 +3,63 @@
 <!-- BEGIN GENERATED: deployment-options -->
 ## Deployment Options
 
-`salesforce-agent` exposes its MCP server (console script `salesforce-mcp`) four ways. Pick the row that
-matches where the server runs relative to your MCP client, then copy the matching
-`mcp_config.json` below. Replace the `<your-…>` placeholders with the values from the **Configuration / Environment Variables** section.
+`salesforce-agent` supports local stdio, a loopback-only development listener, a
+least-privilege stdio container, and a remote authenticated HTTPS boundary.
+Provider endpoint, credential, selector, identity, and trust material are supplied
+at runtime through `AgentConfig`; none is stored in this repository.
 
-| # | Option | Transport | Where it runs | `mcp_config.json` key |
-|---|--------|-----------|---------------|------------------------|
-| 1 | stdio | `stdio` | client launches a subprocess | `command` |
-| 2 | Streamable-HTTP (local) | `streamable-http` | a local network port | `command` or `url` |
-| 3 | Local container / uv | `stdio` or `streamable-http` | Docker / Podman / uv on this host | `command` or `url` |
-| 4 | Remote URL | `streamable-http` | a remote host behind Caddy | `url` |
-
-### 1. stdio (local subprocess)
-
-The client launches the server over stdio via `uvx` — best for local IDEs
-(Cursor, Claude Desktop, VS Code):
+### Installed stdio process
 
 ```json
 {
   "mcpServers": {
-    "salesforce-mcp": {
-      "command": "uvx",
-      "args": ["--from", "salesforce-agent", "salesforce-mcp"],
-      "env": {
-        "SALESFORCE_INSTANCE_URL": "<your-salesforce_instance_url>",
-        "SALESFORCE_LOGIN_URL": "<your-salesforce_login_url>",
-        "SALESFORCE_REFRESH_TOKEN": "<your-salesforce_refresh_token>"
-      }
+    "salesforce": {
+      "command": "salesforce-mcp",
+      "args": [],
+      "env": {"MCP_TOOL_MODE": "intent"}
     }
   }
 }
 ```
 
-### 2. Streamable-HTTP (local process)
-
-Run the server as a long-lived HTTP process:
+### Loopback development listener
 
 ```bash
-uvx --from salesforce-agent salesforce-mcp --transport streamable-http --host 0.0.0.0 --port 8000
-curl -s http://localhost:8000/health        # {"status":"OK"}
+salesforce-mcp --transport streamable-http --host 127.0.0.1 --port 8000
 ```
 
-Then either let the client launch it:
+Do not expose this listener beyond loopback. Network deployments require direct TLS
+or an explicitly trusted TLS-terminating ingress, configured authentication, exact
+`MCP_ALLOWED_HOSTS`, and an exact trusted-proxy CIDR policy.
 
-```json
-{
-  "mcpServers": {
-    "salesforce-mcp": {
-      "command": "uvx",
-      "args": ["--from", "salesforce-agent", "salesforce-mcp", "--transport", "streamable-http", "--port", "8000"],
-      "env": {
-        "TRANSPORT": "streamable-http",
-        "HOST": "0.0.0.0",
-        "PORT": "8000",
-        "SALESFORCE_INSTANCE_URL": "<your-salesforce_instance_url>",
-        "SALESFORCE_LOGIN_URL": "<your-salesforce_login_url>",
-        "SALESFORCE_REFRESH_TOKEN": "<your-salesforce_refresh_token>"
-      }
-    }
-  }
-}
-```
-
-…or connect to the already-running process by URL:
-
-```json
-{
-  "mcpServers": {
-    "salesforce-mcp": { "url": "http://localhost:8000/mcp" }
-  }
-}
-```
-
-### 3. Local container / uv
-
-**(a) Launch a container directly from `mcp_config.json`** (stdio over the container —
-no ports to manage). Swap `docker` for `podman` for a daemonless runtime:
-
-```json
-{
-  "mcpServers": {
-    "salesforce-mcp": {
-      "command": "docker",
-      "args": [
-        "run", "-i", "--rm",
-        "-e", "TRANSPORT=stdio",
-        "-e", "SALESFORCE_INSTANCE_URL=<your-salesforce_instance_url>",
-        "-e", "SALESFORCE_LOGIN_URL=<your-salesforce_login_url>",
-        "-e", "SALESFORCE_REFRESH_TOKEN=<your-salesforce_refresh_token>",
-        "knucklessg1/salesforce-agent:latest"
-      ]
-    }
-  }
-}
-```
-
-**(b) Run a local streamable-http container, then connect by URL:**
+### Least-privilege local container
 
 ```bash
-docker run -d --name salesforce-mcp -p 8000:8000 \
-  -e TRANSPORT=streamable-http \
-  -e PORT=8000 \
-  -e SALESFORCE_INSTANCE_URL="<your-salesforce_instance_url>" \
-  -e SALESFORCE_LOGIN_URL="<your-salesforce_login_url>" \
-  -e SALESFORCE_REFRESH_TOKEN="<your-salesforce_refresh_token>" \
-  knucklessg1/salesforce-agent:latest
-# or, from a clone of this repo:
-docker compose -f docker/mcp.compose.yml up -d
+docker run -i --rm \
+  --read-only \
+  --cap-drop=ALL \
+  --security-opt=no-new-privileges \
+  --pids-limit=256 \
+  --tmpfs /tmp:rw,noexec,nosuid,nodev,size=64m \
+  -e TRANSPORT=stdio \
+  registry.example.invalid/salesforce-agent@sha256:<digest> salesforce-mcp
 ```
+
+The operator projects the selected AgentConfig profile into the process at runtime;
+the image remains immutable and contains no environment connection profile.
+
+### Remote authenticated HTTPS endpoint
 
 ```json
 {
   "mcpServers": {
-    "salesforce-mcp": { "url": "http://localhost:8000/mcp" }
+    "salesforce": {"url": "https://service.example.invalid/mcp"}
   }
 }
 ```
 
-**(c) From a local checkout with `uv`:**
-
-```bash
-uv run salesforce-mcp --transport streamable-http --port 8000
-```
-
-### 4. Remote URL (deployed behind Caddy)
-
-When the server is deployed remotely (e.g. as a Docker service) and published through
-Caddy on the internal `*.arpa` zone, connect with the `"url"` key — no local process or
-image required:
-
-```json
-{
-  "mcpServers": {
-    "salesforce-mcp": { "url": "http://salesforce-mcp.arpa/mcp" }
-  }
-}
-```
-
-Caddy reverse-proxies `http://salesforce-mcp.arpa` to the container's `:8000`
-streamable-http listener; `http://salesforce-mcp.arpa/health` returns
-`{"status":"OK"}` when the service is live.
+Store the real remote URL, outbound identity reference, and TLS-profile reference in
+`AgentConfig`, not in MCP client JSON or documentation.
 <!-- END GENERATED: deployment-options -->
 
 ## MCP server transports
@@ -201,7 +118,7 @@ This brings up both the `salesforce-agent-mcp` service (port 8000) and the
 ## Building the image
 
 ```bash
-docker build -f docker/Dockerfile -t knucklessg1/salesforce-agent:latest .
+docker build -f docker/Dockerfile -t example/salesforce-agent:agent-local .
 ```
 
 A `docker/debug.Dockerfile` is provided for an in-place editable install with
@@ -237,11 +154,11 @@ For fleet deployments, publish the MCP server behind Caddy and register the
 hostname in Technitium DNS:
 
 ```caddyfile
-salesforce-mcp.arpa {
+salesforce-mcp.example.invalid {
     reverse_proxy salesforce-agent-mcp:8000
 }
 ```
 
-Point an `A` record for `salesforce-mcp.arpa` at the ingress node in
-Technitium, then use `https://salesforce-mcp.arpa/mcp` as the client `MCP_URL`
-and `https://salesforce-mcp.arpa/health` as the health-check target.
+Point an `A` record for `salesforce-mcp.example.invalid` at the ingress node in
+Technitium, then use `https://salesforce-mcp.example.invalid/mcp` as the client `MCP_URL`
+and `https://salesforce-mcp.example.invalid/health` as the health-check target.

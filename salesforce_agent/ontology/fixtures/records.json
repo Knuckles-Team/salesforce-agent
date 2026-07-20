@@ -1,0 +1,34 @@
+{
+  "connector": "salesforce-agent",
+  "fixtures": [
+    {
+      "expected": {
+        "acl_state": "quarantine",
+        "id": "fixture-record",
+        "title": "Synthetic certification record"
+      },
+      "preset": "salesforce-accounts",
+      "record": {
+        "Description": "Synthetic content used only for contract validation.",
+        "Id": "fixture-record",
+        "Name": "Synthetic certification record",
+        "acl_public": false
+      }
+    },
+    {
+      "expected": {
+        "acl_state": "quarantine",
+        "id": "fixture-record",
+        "title": "Synthetic certification record"
+      },
+      "preset": "salesforce-opportunities",
+      "record": {
+        "Description": "Synthetic content used only for contract validation.",
+        "Id": "fixture-record",
+        "Name": "Synthetic certification record",
+        "acl_public": false
+      }
+    }
+  ],
+  "schema_version": "1"
+}

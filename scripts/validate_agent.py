@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 try:
     from salesforce_agent import agent_server
 except ImportError as e:
-    print(f"Import Error: {e}")
+    print(f"Import failed: {type(e).__name__}")
     print("Please install dependencies via `pip install .[all]`")
     sys.exit(1)
 

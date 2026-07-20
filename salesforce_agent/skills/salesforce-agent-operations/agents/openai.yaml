@@ -1,0 +1,4 @@
+interface:
+  display_name: "Salesforce Agent Operations"
+  short_description: "Help with Salesforce Agent Operations tasks"
+  default_prompt: "Use $salesforce-agent-operations to complete a governed provider workflow."

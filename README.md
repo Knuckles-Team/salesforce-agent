@@ -51,26 +51,24 @@ graph TD
 
 ## Installation
 
-> **Install the slim `[mcp]` extra to run the MCP server.** `salesforce-agent[mcp]`
-> pulls only the FastMCP / FastAPI tooling (`agent-utilities[mcp]`). It deliberately
-> **excludes** the heavy agent runtime (the epistemic-graph engine, `pydantic-ai`,
-> `dspy`, `llama-index`, `tree-sitter`), so `uvx`/container installs are dramatically
-> smaller and faster. Use the full `[agent]` extra only when you need the integrated
-> Pydantic AI agent.
+> **Install the connector-focused `[mcp]` extra.** Examples use `salesforce-agent[mcp]` to add
+> FastMCP / FastAPI through `agent-utilities[mcp]`; the required Agent Utilities core
+> still carries `epistemic-graph[full]`. The `[agent]` extra additionally
+> enables model orchestration.
 
 Pick the extra that matches what you want to run:
 
 | Extra | Installs | Use when |
 |-------|----------|----------|
 | `salesforce-agent` (core) | Owned thin httpx Salesforce client (no server tooling) | You only use the **Python `Api` client** |
-| `salesforce-agent[mcp]` | Slim MCP server (`agent-utilities[mcp]` — FastMCP/FastAPI) | You run the **MCP server** (smallest server install / image) |
-| `salesforce-agent[agent]` | Full agent runtime (`agent-utilities[agent,logfire]` — Pydantic AI + the epistemic-graph engine) | You run the **integrated agent** |
+| `salesforce-agent[mcp]` | Connector-focused MCP server (`agent-utilities[mcp]` — FastMCP/FastAPI + `epistemic-graph[full]`) | You run the **MCP server** (smallest server install / image) |
+| `salesforce-agent[agent]` | Agent runtime (`agent-utilities[agent-runtime,logfire]` — model orchestration + `epistemic-graph[full]`) | You run the **integrated agent** |
 | `salesforce-agent[jwt]` | + `cryptography` for the JWT bearer flow | You authenticate via OAuth2 JWT bearer |
 | `salesforce-agent[all]` | Everything (`mcp` + `agent` + `jwt` + `logfire`) | Development / all surfaces |
 
 ```bash
 pip install salesforce-agent            # core client only
-pip install "salesforce-agent[mcp]"     # + slim FastMCP server
+pip install "salesforce-agent[mcp]"     # + FastMCP server
 pip install "salesforce-agent[agent]"   # + Pydantic AI A2A agent (epistemic-graph engine)
 pip install "salesforce-agent[jwt]"     # + cryptography for the JWT bearer flow
 pip install "salesforce-agent[all]"     # everything
@@ -82,26 +80,27 @@ One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `
 
 | Image tag | Build target | Contents | Entrypoint |
 |-----------|--------------|----------|------------|
-| `knucklessg1/salesforce-agent:mcp` | `--target mcp` | `salesforce-agent[mcp]` — **slim**, no engine/`pydantic-ai`/`dspy`/`llama-index`/`tree-sitter` | `salesforce-mcp` |
-| `knucklessg1/salesforce-agent:latest` | `--target agent` (default) | `salesforce-agent[agent]` — **full** agent runtime + epistemic-graph engine | `salesforce-agent` |
+| `example/salesforce-agent:mcp` | `--target mcp` | `salesforce-agent[mcp]` — **connector-focused**, includes `epistemic-graph[full]`; no model-orchestration stack | `salesforce-mcp` |
+| `example/salesforce-agent@sha256:<digest>` | `--target agent` (default) | `salesforce-agent[agent]` — **agent runtime**, model orchestration + `epistemic-graph[full]` | `salesforce-agent` |
 
 ```bash
-docker build --target mcp   -t knucklessg1/salesforce-agent:mcp    docker/   # slim MCP server
-docker build --target agent -t knucklessg1/salesforce-agent:latest docker/   # full agent
+docker build --target mcp   -t example/salesforce-agent:mcp    docker/   # connector-focused MCP server
+docker build --target agent -t example/salesforce-agent:agent-local docker/   # agent runtime
 ```
 
-`docker/mcp.compose.yml` runs the slim `:mcp` server; `docker/agent.compose.yml` runs the
-agent (`:latest`) with a co-located `:mcp` sidecar.
+`docker/mcp.compose.yml` runs the connector-focused `:mcp` server; `docker/agent.compose.yml` runs the
+agent (`immutable agent digest`) with a co-located `:mcp` sidecar.
 
 ### Knowledge-graph database (`epistemic-graph`)
 
-The **full agent** (`[agent]` / `:latest`) embeds the **epistemic-graph** engine (pulled in
-transitively via `agent-utilities[agent]`). For production — or to share one knowledge graph
-across multiple agents — run **epistemic-graph as its own database container** and point the
-agent at it instead of embedding it. Deployment recipes (single-node + Raft HA), connection
-config, and the full database architecture (with diagrams) are documented in the
+Both `[mcp]` and `[agent]` carry the **epistemic-graph** engine through the required
+Agent Utilities core dependency (`epistemic-graph[full]`). The `[mcp]` extra keeps
+the server connector-focused; `[agent]` additionally enables model orchestration. Local
+deployments can use the bundled engine. For production or shared state, run
+**epistemic-graph as a dedicated database service** and configure the runtime to use it.
+Deployment recipes (single-node + Raft HA), connection configuration, and architecture
+diagrams are documented in the
 [epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
-The slim `[mcp]` server and the core client do **not** require the database.
 
 ## MCP Tools
 
@@ -161,8 +160,8 @@ cached with expiry tracking and refreshed transparently (plus one retry on
 | `TRANSPORT` | `stdio` | options: stdio, streamable-http, sse |
 | `ENABLE_OTEL` | `True` |  |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:8080/api/public/otel` |  |
-| `OTEL_EXPORTER_OTLP_PUBLIC_KEY` | `pk-...` |  |
-| `OTEL_EXPORTER_OTLP_SECRET_KEY` | `sk-...` |  |
+| `OTEL_EXPORTER_OTLP_PUBLIC_KEY` | secret-injected |  |
+| `OTEL_EXPORTER_OTLP_SECRET_KEY` | secret-injected |  |
 | `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` |  |
 | `EUNOMIA_TYPE` | `none` | options: none, embedded, remote |
 | `EUNOMIA_POLICY_FILE` | `mcp_policies.json` |  |
@@ -171,18 +170,19 @@ cached with expiry tracking and refreshed transparently (plus one retry on
 | `SALESFORCE_LOGIN_URL` | — | Override the OAuth login host (otherwise derived from SALESFORCE_SANDBOX) |
 | `SALESFORCE_SANDBOX` | `False` | Sandbox org? true -> https://test.salesforce.com |
 | `SALESFORCE_API_VERSION` | `v62.0` | REST API version |
-| `SALESFORCE_SSL_VERIFY` | `True` | SSL verification flag |
+| `SALESFORCE_TLS_PROFILE` | `system` | Named outbound TLS policy from AgentConfig. A reference can provide runtime-only trust material without storing machine-specific paths. |
+| `SALESFORCE_TLS_PROFILE_REF` | — |  |
 | `SALESFORCE_TIMEOUT` | `30` | HTTP timeout in seconds |
-| `SALESFORCE_AUTH_FLOW` | — | Explicit override: client_credentials | refresh_token | jwt_bearer | access_token |
+| `SALESFORCE_AUTH_FLOW` | — | Explicit override: client_credentials \| refresh_token \| jwt_bearer \| access_token |
 | `SALESFORCE_CLIENT_ID` | — | Connected App consumer key/secret (client_credentials, refresh_token, jwt_bearer) |
-| `SALESFORCE_CLIENT_SECRET` | — |  |
-| `SALESFORCE_REFRESH_TOKEN` | — | Refresh-token flow |
+| `SALESFORCE_CLIENT_SECRET` | secret-injected |  |
+| `SALESFORCE_REFRESH_TOKEN` | secret-injected | Refresh-token flow |
 | `SALESFORCE_JWT_SUBJECT` | `integration.user@yourorg.com` | JWT bearer flow (pip install salesforce-agent[jwt]) |
-| `SALESFORCE_JWT_PRIVATE_KEY` | — |  |
-| `SALESFORCE_JWT_PRIVATE_KEY_PATH` | — |  |
+| `SALESFORCE_JWT_PRIVATE_KEY` | secret-injected |  |
+| `SALESFORCE_JWT_PRIVATE_KEY_PATH` | secret-injected |  |
 | `SALESFORCE_JWT_AUDIENCE` | — |  |
-| `SALESFORCE_ACCESS_TOKEN` | — | Static access token (testing / short-lived sessions) |
-| `SALESFORCE_TOKEN_TTL_SECONDS` | `1800` | Cached-token TTL when the token response has no expires_in |
+| `SALESFORCE_ACCESS_TOKEN` | secret-injected | Static access token (testing / short-lived sessions) |
+| `SALESFORCE_TOKEN_TTL_SECONDS` | secret-injected | Cached-token TTL when the token response has no expires_in |
 | `SALESFORCE_ALLOW_DESTRUCTIVE` | `False` | Gate for record delete, collections delete, and bulk delete/hardDelete jobs |
 | `SALESFORCE_MAX_QUERY_RECORDS` | `2000` | Per-call cap on auto-paginated SOQL results |
 | `SALESFORCE_BULK_RESULTS_MAX_BYTES` | `5000000` | Per-call cap on Bulk API 2.0 result downloads (bytes) |
@@ -198,14 +198,16 @@ cached with expiry tracking and refreshed transparently (plus one retry on
 
 | Variable | Example | Description |
 |----------|---------|-------------|
-| `MCP_TOOL_MODE` | `condensed` | Tool surface: `condensed` | `verbose` | `both` |
+| `MCP_TOOL_MODE` | `intent` | Tool surface: `intent` \| `condensed` \| `verbose` \| `both` |
 | `MCP_ENABLED_TOOLS` | — | Comma-separated tool allow-list |
 | `MCP_DISABLED_TOOLS` | — | Comma-separated tool deny-list |
 | `MCP_ENABLED_TAGS` | — | Comma-separated tag allow-list |
 | `MCP_DISABLED_TAGS` | — | Comma-separated tag deny-list |
-| `MCP_CLIENT_AUTH` | — | Outbound MCP auth (`oidc-client-credentials` for fleet calls) |
+| `MCP_CLIENT_AUTH` | — | Outbound MCP child auth: `oidc-client-credentials` \| `basic` \| `none` |
 | `OIDC_CLIENT_ID` | — | OIDC client id (service-account auth) |
-| `OIDC_CLIENT_SECRET` | — | OIDC client secret (service-account auth) |
+| `OIDC_CLIENT_SECRET_REF` | `secret://identity/oidc-client-secret` | Runtime secret reference for the OIDC service account |
+| `MCP_BASIC_AUTH_USERNAME` | — | HTTP Basic username (`MCP_CLIENT_AUTH=basic`) |
+| `MCP_BASIC_AUTH_PASSWORD_REF` | `secret://identity/mcp-basic-password` | Runtime secret reference for HTTP Basic auth (`MCP_CLIENT_AUTH=basic`) |
 | `DEBUG` | `False` | Verbose logging |
 | `PYTHONUNBUFFERED` | `1` | Unbuffered stdout (recommended in containers) |
 | `MCP_URL` | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to |
@@ -213,7 +215,7 @@ cached with expiry tracking and refreshed transparently (plus one retry on
 | `MODEL_ID` | `gpt-4o` | Model id for the agent |
 | `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
 
-_37 package + 14 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+_38 package + 16 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
 
 
@@ -229,7 +231,7 @@ _37 package + 14 inherited variable(s). Auto-generated from `.env.example` + the
 | `SALESFORCE_JWT_SUBJECT` / `SALESFORCE_JWT_PRIVATE_KEY[_PATH]` / `SALESFORCE_JWT_AUDIENCE` | — | JWT bearer flow |
 | `SALESFORCE_ACCESS_TOKEN` | — | Static access token (testing) |
 | `SALESFORCE_TOKEN_TTL_SECONDS` | `1800` | Cached-token TTL fallback |
-| `SALESFORCE_SSL_VERIFY` | `True` | TLS verification |
+| `SALESFORCE_TLS_PROFILE` | `system` | TLS verification |
 | `SALESFORCE_TIMEOUT` | `30` | HTTP timeout (seconds) |
 | `SALESFORCE_ALLOW_DESTRUCTIVE` | `False` | Gate for all delete paths |
 | `SALESFORCE_MAX_QUERY_RECORDS` | `2000` | Per-call SOQL pagination cap |
@@ -285,16 +287,16 @@ deployment guides; concept registry in [docs/concepts.md](docs/concepts.md)
 <!-- BEGIN GENERATED: additional-deployment-options -->
 ### Additional Deployment Options
 
-`salesforce-agent` can also run as a **local container** (Docker / Podman / `uv`) or be
-consumed from a **remote deployment**. The
-[Deployment guide](https://knuckles-team.github.io/salesforce-agent/deployment/) has full, copy-paste
-`mcp_config.json` for all four transports — **stdio**, **streamable-http**,
-**local container / uv**, and **remote URL**:
+`salesforce-agent` can run as a local stdio process or container, or behind a remote
+network boundary. The
+[Deployment guide](https://knuckles-team.github.io/salesforce-agent/deployment/) carries
+the detailed transport contract.
 
-- **Local container / uv** — launch the server from `mcp_config.json` via `uvx`,
-  `docker run`, or `podman run`, or point at a local streamable-http container by `url`.
-- **Remote URL** — connect to a server deployed behind Caddy at
-  `http://salesforce-mcp.arpa/mcp` using the `"url"` key.
+- **Local container** — launch a reviewed immutable image as a least-privilege
+  stdio child with no listener or published port.
+- **Remote URL** — connect through an operator-supplied authenticated HTTPS
+  ingress. Keep its URL, outbound identity references, trust profile, and exact
+  `MCP_ALLOWED_HOSTS` in `AgentConfig`.
 <!-- END GENERATED: additional-deployment-options -->
 
 ## Development
@@ -310,23 +312,40 @@ pre-commit run --all-files   # must be fully green before committing
 MIT — see [LICENSE](LICENSE).
 
 
-<!-- BEGIN agent-os-genesis-deploy (generated; do not edit between markers) -->
+<!-- BEGIN agent-utilities-deployment (generated; do not edit between markers) -->
 
-## Deploy with `agent-os-genesis`
+## Deploy with `agent-utilities-deployment`
 
-This package can be provisioned for you — skill-guided — by the **`agent-os-genesis`**
-universal skill (its *single-package deploy mode*): it picks your install method, seeds
-secrets to OpenBao/Vault (or `.env`), trusts your enterprise CA, registers the MCP
-server, and verifies it — the same machinery that stands up the whole Agent OS, narrowed
-to just this package. Ask your agent to **"deploy `salesforce-agent` with agent-os-genesis"**.
+Provision this package with the consolidated **`agent-utilities-deployment`**
+workflow. It selects an installed-package, editable-source, or immutable-container
+path; records only runtime secret and TLS-profile references in `AgentConfig`; and
+runs doctor, registration, policy, observability, and rollback gates. Ask your agent
+to **"deploy `salesforce-agent` with agent-utilities-deployment"**.
 
 | Install mode | Command |
 |------|---------|
-| Bare-metal, prod (PyPI) | `uvx salesforce-mcp` · or `uv tool install salesforce-agent` |
-| Bare-metal, dev (editable) | `uv pip install -e ".[all]"` · or `pip install -e ".[all]"` |
-| Container, prod | deploy `knucklessg1/salesforce-agent:latest` via docker-compose / swarm / podman / podman-compose / kubernetes |
-| Container, dev (editable) | deploy `docker/compose.dev.yml` (source-mounted at `/src`; edits live on restart) |
+| Installed package | `uv tool install "salesforce-agent[mcp]"`, then run `salesforce-mcp` |
+| Editable source | `uv pip install -e ".[agent]"`, then run `salesforce-mcp` |
+| Immutable container | deploy `registry.example.invalid/salesforce-agent@sha256:<digest>` through the operator-selected orchestrator |
 
-Secrets are read-existing + seeded via `vault_sync` — you are only prompted for what's missing.
+The repository embeds no deployment profile, credential value, certificate path, or
+environment-specific endpoint. Supply those at runtime through `AgentConfig` and the
+configured secret provider.
 
-<!-- END agent-os-genesis-deploy -->
+<!-- END agent-utilities-deployment -->
+
+<!-- GOVERNED-CAPABILITY:START -->
+## Governed capability contract
+
+This package ships a compact canonical skill surface with specialist procedures
+kept as referenced workflows. The current MCP tools, skill metadata,
+`connector_manifest.yml`, ontology, mappings, shapes, fixtures, migrations,
+tool-schema fingerprints, and certification metadata form one versioned
+capability contract. Validate them together; do not rely on stale tool names or
+historical per-task skill wrappers.
+
+Runtime endpoints, credentials, certificate trust, tenant identity, retention,
+and observability policy are deployment inputs and are never packaged values.
+See [Configuration, trust, and privacy](docs/configuration.md) before enabling a
+network transport, connector ingestion, GraphOS delegation, or trace export.
+<!-- GOVERNED-CAPABILITY:END -->

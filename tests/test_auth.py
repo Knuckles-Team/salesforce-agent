@@ -142,7 +142,7 @@ class TestClientCredentialsFlow:
         with pytest.raises(SalesforceAuthError) as excinfo:
             auth.token()
         assert "the-consumer-secret" not in str(excinfo.value)
-        assert REDACTED in str(excinfo.value)
+        assert str(excinfo.value) == "Salesforce token request failed (client_credentials)"
         assert excinfo.value.error_code == "invalid_client"
 
     def test_missing_credentials_raise(self):

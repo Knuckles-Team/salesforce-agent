@@ -1,0 +1,8 @@
+{
+  "algorithm": "agent-utilities:mcp-tool-schema-compat:v1",
+  "connector": "salesforce-agent",
+  "schema_version": "1",
+  "tools": {
+    "salesforce_soql": "e4ddfa83b19760793b7278dfa11bc9b89688dba3ef109ed92d67450cbc6d5880"
+  }
+}

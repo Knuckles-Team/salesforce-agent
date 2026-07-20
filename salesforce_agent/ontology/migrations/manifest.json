@@ -1,0 +1,6 @@
+{
+  "connector": "salesforce-agent",
+  "current_ontology_source": "salesforce",
+  "migrations": [],
+  "schema_version": "1"
+}

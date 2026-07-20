@@ -129,9 +129,7 @@ def map_response_error(
     redact: Callable[[str], str] | None = None,
 ) -> SalesforceError:
     """Map an HTTP failure to a typed :class:`SalesforceError` subclass."""
-    message, error_code, fields, details = parse_error_payload(text)
-    if redact is not None:
-        message = redact(message)
+    _message, error_code, _fields, _details = parse_error_payload(text)
 
     cls: type[SalesforceError]
     if status_code == 403 and error_code == "REQUEST_LIMIT_EXCEEDED":
@@ -142,9 +140,9 @@ def map_response_error(
         cls = _STATUS_MAP.get(status_code, SalesforceError)
 
     return cls(
-        f"Salesforce API error {status_code}: {message}",
+        f"Salesforce API error {status_code}",
         status_code=status_code,
         error_code=error_code,
-        fields=fields,
-        details=details,
+        fields=[],
+        details=[],
     )

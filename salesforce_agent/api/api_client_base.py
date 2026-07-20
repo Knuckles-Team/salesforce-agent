@@ -28,9 +28,9 @@ class ApiClientBase:
         self.auth = auth
         self._http = httpx.Client(
             timeout=auth.config.timeout,
-            verify=auth.config.verify,
             transport=transport,
             follow_redirects=True,
+            **auth.config.tls_profile.httpx_kwargs(),
         )
 
     @property

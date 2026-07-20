@@ -1,0 +1,31 @@
+schema_version: '1'
+connector: salesforce-agent
+ontology_source: salesforce
+sync:
+- preset: salesforce-accounts
+  server: salesforce-agent
+  tool: salesforce_soql
+  action: query
+  records_path: records
+  id_field: Id
+  title_field: Name
+  text_field: Description
+  updated_field: null
+  doc_type: salesforce_account
+  tool_schema_sha256: e4ddfa83b19760793b7278dfa11bc9b89688dba3ef109ed92d67450cbc6d5880
+- preset: salesforce-opportunities
+  server: salesforce-agent
+  tool: salesforce_soql
+  action: query
+  records_path: records
+  id_field: Id
+  title_field: Name
+  text_field: Description
+  updated_field: null
+  doc_type: salesforce_opportunity
+  tool_schema_sha256: e4ddfa83b19760793b7278dfa11bc9b89688dba3ef109ed92d67450cbc6d5880
+governance:
+  default_acl: quarantine
+  identity: opaque-reference
+  tenant: required-at-materialization
+  provenance: required-at-materialization

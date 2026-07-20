@@ -139,6 +139,7 @@ sync:
   updated_field: null
   pagination: null
   doc_type: salesforce_account
+  tool_schema_sha256: e4ddfa83b19760793b7278dfa11bc9b89688dba3ef109ed92d67450cbc6d5880
   raw:
     server: salesforce-agent
     tool: salesforce_soql
@@ -161,6 +162,7 @@ sync:
   updated_field: null
   pagination: null
   doc_type: salesforce_opportunity
+  tool_schema_sha256: e4ddfa83b19760793b7278dfa11bc9b89688dba3ef109ed92d67450cbc6d5880
   raw:
     server: salesforce-agent
     tool: salesforce_soql
@@ -174,17 +176,20 @@ sync:
     doc_type: salesforce_opportunity
 provenance:
   generated_by: scripts/generate_connector_manifests.py
-  generated_at: '2026-07-09T00:00:00Z'
+  generated_at: '2026-07-18T00:00:00Z'
   source_artifacts:
   - a2a.json
   - salesforce_agent/connectors/mcp_source_presets.json
+  - salesforce_agent/connectors/tool_schema_fingerprints.json
   - salesforce_agent/ontology/salesforce.ttl
   integrity:
     algorithm: urdna2015-sha256
     hash: 391c839a601d69d241efdce3ed5e6e1da188e304b4ae36e3892de465d57c5cc2
     triple_count: 64
   signer: ontology-manifest-generator
-  signature: 67894f9420f979e17f44e25e775ec97542a5d0874471c79151b2b0c57014025c
+  signature_algorithm: ed25519
+  signing_public_key: q0Cp7bmQMqJhbofGKKw8xXC6KbFzukBDDke0UYVi8y4
+  signature: Gfm3lNHuq6H0KfpF-LCcl-qd9vjueJdzpBnv_OWLQU3tHWrtRBUxMe2rlQzwErTe0khlxO2_Pra9o1bvmQCIDA
 policy:
   pii_fields:
     Account:

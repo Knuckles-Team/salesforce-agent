@@ -8,6 +8,9 @@ CONCEPT:AU-KG.ingest.enterprise-source-extractor.
 
 from __future__ import annotations
 
+import pytest
+from agent_utilities.knowledge_graph.memory.native_ingest import NativeIngestError
+
 from salesforce_agent.kg_ingest import (
     INGEST_QUERIES,
     ingest_entities,
@@ -19,6 +22,7 @@ from salesforce_agent.kg_ingest import (
 class _FakeTxn:
     def __init__(self):
         self.nodes = {}
+        self.edges = []
         self.committed = False
 
     def begin(self, graph=None):
@@ -28,33 +32,27 @@ class _FakeTxn:
     def add_node(self, txn, node_id, props):
         self.nodes[node_id] = props
 
+    def add_edge(self, txn, source, target, props):
+        self.edges.append((source, target, props))
+
     def commit(self, txn):
         self.committed = True
         return True
 
 
-class _FakeEdges:
-    def __init__(self):
-        self.edges = []
-
-    def add(self, src, dst, props):
-        self.edges.append((src, dst, props))
-
-
 class _FakeClient:
     def __init__(self):
         self.txn = _FakeTxn()
-        self.edges = _FakeEdges()
 
 
 def test_ingest_entities_writes_nodes_and_edges():
     c = _FakeClient()
     res = ingest_entities(
         [
-            {"id": "a", "type": "Account", "name": "Acme"},
-            {"id": "b", "type": "Contact"},
+            {"id": "a", "node_type": "Account", "name": "Acme"},
+            {"id": "b", "node_type": "Contact"},
         ],
-        [{"source": "b", "target": "a", "type": "worksAtAccount"}],
+        [{"source": "b", "target": "a", "relationship": "worksAtAccount"}],
         client=c,
         graph="__commons__",
     )
@@ -64,7 +62,7 @@ def test_ingest_entities_writes_nodes_and_edges():
     # provenance is stamped
     assert c.txn.nodes["a"]["source"] == "salesforce-agent"
     assert c.txn.nodes["a"]["domain"] == "salesforce"
-    assert c.edges.edges == [("b", "a", {"type": "worksAtAccount"})]
+    assert c.txn.edges == [("b", "a", {"relationship": "worksAtAccount"})]
 
 
 def test_ingest_records_accounts_with_owner():
@@ -78,12 +76,12 @@ def test_ingest_records_accounts_with_owner():
     # 1 account + 1 owner Person node, 1 ownedBy edge
     assert res == {"nodes": 2, "edges": 1}
     acct = c.txn.nodes["salesforce:Account:001A"]
-    assert acct["type"] == "Account"
+    assert acct["node_type"] == "Account"
     assert acct["industry"] == "Tech"
     assert acct["salesforceId"] == "001A"
-    assert c.txn.nodes["salesforce:User:005U"]["type"] == "Person"
-    assert c.edges.edges == [
-        ("salesforce:Account:001A", "salesforce:User:005U", {"type": "ownedBy"})
+    assert c.txn.nodes["salesforce:User:005U"]["node_type"] == "Person"
+    assert c.txn.edges == [
+        ("salesforce:Account:001A", "salesforce:User:005U", {"relationship": "ownedBy"})
     ]
 
 
@@ -97,11 +95,11 @@ def test_ingest_records_contact_links_account():
     )
     assert res == {"nodes": 1, "edges": 1}
     assert c.txn.nodes["salesforce:Contact:003C"]["email"] == "j@x.io"
-    assert c.edges.edges == [
+    assert c.txn.edges == [
         (
             "salesforce:Contact:003C",
             "salesforce:Account:001A",
-            {"type": "worksAtAccount"},
+            {"relationship": "worksAtAccount"},
         )
     ]
 
@@ -117,11 +115,11 @@ def test_ingest_records_opportunity_links_account():
     assert res == {"nodes": 1, "edges": 1}
     opp = c.txn.nodes["salesforce:Opportunity:006O"]
     assert opp["stageName"] == "Won"
-    assert c.edges.edges == [
+    assert c.txn.edges == [
         (
             "salesforce:Opportunity:006O",
             "salesforce:Account:001A",
-            {"type": "opportunityForAccount"},
+            {"relationship": "opportunityForAccount"},
         )
     ]
 
@@ -139,24 +137,25 @@ def test_map_leads_converted_links():
             }
         ]
     )
-    assert entities[0]["type"] == "Lead"
+    assert entities[0]["node_type"] == "Lead"
     assert entities[0]["leadStatus"] == "Qualified"
-    rel_types = {r["type"] for r in rels}
+    rel_types = {r["relationship"] for r in rels}
     assert rel_types == {"convertedToAccount", "convertedToOpportunity"}
 
 
-def test_ingest_noops_without_engine():
-    # No injected client + no reachable engine -> clean no-op.
-    assert ingest_entities([{"id": "a", "type": "Account"}]) is None
+def test_retired_structural_alias_is_rejected():
+    with pytest.raises(NativeIngestError, match="canonical node_type"):
+        ingest_entities([{"id": "a", "type": "Account"}], client=_FakeClient())
 
 
-def test_ingest_empty_is_noop():
-    assert ingest_entities([], client=_FakeClient()) is None
-    assert ingest_records("Account", [], client=_FakeClient()) is None
+def test_empty_native_ingest_is_rejected():
+    with pytest.raises(NativeIngestError, match="at least one entity"):
+        ingest_entities([], client=_FakeClient())
 
 
-def test_ingest_records_unknown_sobject_is_noop():
-    assert ingest_records("Widget", [{"Id": "1"}], client=_FakeClient()) is None
+def test_ingest_records_rejects_unknown_sobject():
+    with pytest.raises(NativeIngestError, match="unsupported Salesforce object"):
+        ingest_records("Widget", [{"Id": "1"}], client=_FakeClient())
 
 
 def test_ingest_queries_cover_core_objects():

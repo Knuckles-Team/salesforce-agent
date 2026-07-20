@@ -31,6 +31,10 @@ from typing import TYPE_CHECKING
 import httpx
 from agent_utilities.base_utilities import get_logger, to_boolean
 from agent_utilities.core.config import setting
+from agent_utilities.core.transport_security import (
+    ResolvedTLSProfile,
+    resolve_configured_tls_profile,
+)
 
 if TYPE_CHECKING:
     from salesforce_agent.api_client import Api
@@ -69,7 +73,10 @@ class SalesforceConfig:
     jwt_private_key_path: str = ""
     jwt_audience: str = ""
     timeout: float = 30.0
-    verify: bool = True
+    tls_profile: ResolvedTLSProfile = field(
+        default_factory=lambda: resolve_configured_tls_profile("salesforce"),
+        repr=False,
+    )
     token_ttl_seconds: int = 1800
     allow_destructive: bool = False
     max_query_records: int = 2000
@@ -133,7 +140,11 @@ class SalesforceConfig:
             jwt_private_key_path=setting("SALESFORCE_JWT_PRIVATE_KEY_PATH", ""),
             jwt_audience=setting("SALESFORCE_JWT_AUDIENCE", ""),
             timeout=float(setting("SALESFORCE_TIMEOUT", "30")),
-            verify=to_boolean(setting("SALESFORCE_SSL_VERIFY", "True")),
+            tls_profile=resolve_configured_tls_profile(
+                "salesforce",
+                profile_name=setting("SALESFORCE_TLS_PROFILE", "") or None,
+                profile_ref=setting("SALESFORCE_TLS_PROFILE_REF", "") or None,
+            ),
             token_ttl_seconds=int(setting("SALESFORCE_TOKEN_TTL_SECONDS", "1800")),
             allow_destructive=to_boolean(
                 setting("SALESFORCE_ALLOW_DESTRUCTIVE", "False")
@@ -162,7 +173,9 @@ class SalesforceAuth:
     ):
         self.config = config
         self._http = httpx.Client(
-            timeout=config.timeout, verify=config.verify, transport=transport
+            timeout=config.timeout,
+            transport=transport,
+            **config.tls_profile.httpx_kwargs(),
         )
         self._access_token: str | None = None
         self._instance_url: str = config.instance_url
@@ -243,9 +256,9 @@ class SalesforceAuth:
 
         response = self._http.post(self.config.token_url, data=data)
         if response.status_code >= 400:
-            message, error_code, _, _ = parse_error_payload(response.text)
+            _message, error_code, _, _ = parse_error_payload(response.text)
             raise SalesforceAuthError(
-                f"Salesforce token request failed ({flow}): {self.redact(message)}",
+                f"Salesforce token request failed ({flow})",
                 status_code=response.status_code,
                 error_code=error_code,
             )
