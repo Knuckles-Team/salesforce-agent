@@ -9,7 +9,7 @@ description = "Salesforce REST/SOQL/Bulk API 2.0 connector + MCP Server + A2A Se
 readme = "README.md"
 classifiers = [ "Development Status :: 4 - Beta", "License :: OSI Approved :: MIT License", "Environment :: Console", "Operating System :: POSIX :: Linux", "Programming Language :: Python :: 3",]
 requires-python = ">=3.11, <3.15"
-dependencies = [ "agent-utilities>=1.27.1,<2.0.0", "httpx>=0.27.0",]
+dependencies = [ "agent-utilities>=1.27.1,<2.0.0", "httpx>=0.28.1",]
 [[project.authors]]
 name = "Project Maintainers"
 email = "maintainers@users.noreply.github.com"
@@ -20,9 +20,9 @@ text = "MIT"
 [project.optional-dependencies]
 mcp = [ "agent-utilities[mcp]>=1.27.1,<2.0.0",]
 agent = [ "agent-utilities[agent-runtime,logfire]>=1.27.1,<2.0.0",]
-jwt = [ "cryptography>=48.0.1",]
+jwt = [ "cryptography>=49.0.0",]
 all = [ "salesforce-agent[mcp,agent,jwt,logfire]>=1.0.0",]
-test = [ "pytest-xdist>=3.6.0", "pytest", "pytest-asyncio", "pytest-cov", "cryptography>=48.0.1",]
+test = [ "pytest-xdist>=3.8.0", "pytest>=9.1.1", "pytest-asyncio>=1.4.0", "pytest-cov>=7.1.0", "cryptography>=49.0.0",]
 
 [project.scripts]
 salesforce-mcp = "salesforce_agent.mcp_server:mcp_server"
