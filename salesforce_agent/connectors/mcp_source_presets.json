@@ -1,7 +1,7 @@
 {
   "_comment": "Tier-1 mcp_tool source presets for salesforce-agent (AU-KG.ingest.mcp-tool-connector). Syncs Salesforce CRM objects into the KG as documents via the salesforce-agent MCP server's salesforce_soql tool. Contributed presets win over the central MCP_TOOL_PRESETS. The native typed-node path is salesforce_ingest_crm / salesforce_agent.kg_ingest.",
   "salesforce-accounts": {
-    "server": "salesforce-agent",
+    "server": "salesforce-mcp",
     "tool": "salesforce_soql",
     "action": "query",
     "params": {
@@ -14,7 +14,7 @@
     "doc_type": "salesforce_account"
   },
   "salesforce-opportunities": {
-    "server": "salesforce-agent",
+    "server": "salesforce-mcp",
     "tool": "salesforce_soql",
     "action": "query",
     "params": {

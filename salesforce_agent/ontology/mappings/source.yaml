@@ -3,7 +3,7 @@ connector: salesforce-agent
 ontology_source: salesforce
 sync:
 - preset: salesforce-accounts
-  server: salesforce-agent
+  server: salesforce-mcp
   tool: salesforce_soql
   action: query
   records_path: records
@@ -14,7 +14,7 @@ sync:
   doc_type: salesforce_account
   tool_schema_sha256: e4ddfa83b19760793b7278dfa11bc9b89688dba3ef109ed92d67450cbc6d5880
 - preset: salesforce-opportunities
-  server: salesforce-agent
+  server: salesforce-mcp
   tool: salesforce_soql
   action: query
   records_path: records
