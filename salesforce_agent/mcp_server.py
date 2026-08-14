@@ -21,7 +21,7 @@ from salesforce_agent.mcp.mcp_salesforce import (
     register_soql_tools,
 )
 
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 logger = get_logger(name="salesforce_agent")
 
 

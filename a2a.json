@@ -1,7 +1,7 @@
 {
   "name": "salesforce-agent-agent",
   "type": "agent",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Salesforce REST/SOQL/Bulk API 2.0 connector + MCP Server + A2A Server for Agentic AI!",
   "url": "https://github.com/Knuckles-Team/salesforce-agent/tree/main",
   "license": "MIT",
