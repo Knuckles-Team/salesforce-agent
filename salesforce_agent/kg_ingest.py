@@ -23,6 +23,7 @@ logger = logging.getLogger("salesforce_agent.kg")
 _SOURCE = "salesforce-agent"
 _DOMAIN = "salesforce"
 
+
 def ingest_entities(
     entities: list[dict[str, Any]],
     relationships: list[dict[str, Any]] | None = None,
@@ -34,7 +35,12 @@ def ingest_entities(
 ) -> dict[str, int]:
     """Write canonical typed nodes and relationships in one native transaction."""
     return _native_ingest_entities(
-        entities, relationships, source=source, domain=domain, client=client, graph=graph
+        entities,
+        relationships,
+        source=source,
+        domain=domain,
+        client=client,
+        graph=graph,
     )
 
 
