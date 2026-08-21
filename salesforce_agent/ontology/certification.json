@@ -1,8 +1,7 @@
 {
   "api_version": "graphos.io/v1",
   "artifacts": {
-    "a2a.json": "40771d2255b9a1c7e7ebc7afe65f0bbf755f08a409e654e8b5d98aabe8858130",
-    "connector_manifest.yml": "d4a9398d056fd86eed92f6224c9cc3b01957bb0358c007729baf32c3fc3c0cfe",
+    "connector_manifest.yml": "d00fd40bf48369cbb6b80daf4436994270c64c16d7d92cec17c6955aee59e1bd",
     "salesforce_agent/connectors/mcp_source_presets.json": "644ed7237882e5b5ac96b1c16696e1348a15f025c0d10c23745dfcd8ea6d0c87",
     "salesforce_agent/connectors/tool_schema_fingerprints.json": "6e3d6a050bdf96f4249f83bf7158b4ffe0e8796b4944c8fcb2c8664c30c67d13",
     "salesforce_agent/ontology/fixtures/records.json": "b344913dc0bbc8999151a56c1802f1c15cf818888a0ab8aaa5063326b21e9043",
@@ -19,19 +18,19 @@
     "synthetic_fixture_contract": "passed"
   },
   "compatibility": {
-    "agent_utilities": ">=2.1.0,<3",
+    "agent_utilities": ">=2.4.0,<3",
     "bundle_schema": "2",
-    "epistemic_graph": ">=2.23.0,<3"
+    "epistemic_graph": ">=2.26.0,<3"
   },
   "connector": "salesforce-agent",
   "kind": "ConnectorSourceAttestation",
   "live_certified": false,
   "mode": "offline-source",
   "schema_version": "2",
-  "signature": "x9SMZ8DXM3J4uQBPB26aW5sAacDvtoFaOSECkL37SjkL1WbB9wPz44ye_7IZ4WuvYEtHbGihNDCaq6d4oC9LBA",
-  "signature_algorithm": "ed25519",
-  "signer": "ontology-manifest-generator",
-  "signing_public_key": "QkigdPNpcUU7x7NcSkwCsUXIQpaFncMQbYSoiSgI2SY",
+  "signature": null,
+  "signature_algorithm": "none",
+  "signer": "UNSIGNED-PREVIEW",
+  "signing_public_key": "",
   "status": "source-validated",
-  "validated_at": "2026-07-31T04:00:00Z"
+  "validated_at": "2026-08-21T04:30:39Z"
 }
