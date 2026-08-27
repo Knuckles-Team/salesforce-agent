@@ -1,7 +1,7 @@
 {
   "api_version": "graphos.io/v1",
   "artifacts": {
-    "connector_manifest.yml": "d00fd40bf48369cbb6b80daf4436994270c64c16d7d92cec17c6955aee59e1bd",
+    "connector_manifest.yml": "68756705f22e8d4df8aca302a03f543e6b2fb509eeddc2b3c973701e6ceef757",
     "salesforce_agent/connectors/mcp_source_presets.json": "644ed7237882e5b5ac96b1c16696e1348a15f025c0d10c23745dfcd8ea6d0c87",
     "salesforce_agent/connectors/tool_schema_fingerprints.json": "6e3d6a050bdf96f4249f83bf7158b4ffe0e8796b4944c8fcb2c8664c30c67d13",
     "salesforce_agent/ontology/fixtures/records.json": "b344913dc0bbc8999151a56c1802f1c15cf818888a0ab8aaa5063326b21e9043",
@@ -18,9 +18,9 @@
     "synthetic_fixture_contract": "passed"
   },
   "compatibility": {
-    "agent_utilities": ">=2.4.0,<3",
+    "agent_utilities": ">=2.5.0,<3",
     "bundle_schema": "2",
-    "epistemic_graph": ">=2.26.0,<3"
+    "epistemic_graph": ">=2.27.0,<3"
   },
   "connector": "salesforce-agent",
   "kind": "ConnectorSourceAttestation",
@@ -32,5 +32,5 @@
   "signer": "UNSIGNED-PREVIEW",
   "signing_public_key": "",
   "status": "source-validated",
-  "validated_at": "2026-08-21T04:30:39Z"
+  "validated_at": "2026-08-26T13:42:55Z"
 }
