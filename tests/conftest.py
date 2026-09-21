@@ -310,7 +310,7 @@ def make_config(fake: FakeSalesforce, **overrides) -> SalesforceConfig:
     defaults: dict[str, Any] = dict(
         instance_url=fake.instance,
         client_id="the-consumer-key",
-        client_secret="the-consumer-secret",  # sanitizer:ignore
+        client_secret="example-consumer-secret",
         api_version=API_V,
     )
     defaults.update(overrides)

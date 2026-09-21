@@ -103,7 +103,7 @@ class TestClientCredentialsFlow:
         form = fake.token_requests[0]
         assert form["grant_type"] == "client_credentials"
         assert form["client_id"] == "the-consumer-key"
-        assert form["client_secret"] == "the-consumer-secret"
+        assert form["client_secret"] == "example-consumer-secret"
 
     def test_token_cached_between_calls(self, fake):
         auth = SalesforceAuth(
@@ -134,14 +134,14 @@ class TestClientCredentialsFlow:
     def test_token_endpoint_error_is_typed_and_redacted(self, fake):
         fake.token_error = {
             "error": "invalid_client",
-            "error_description": "bad secret the-consumer-secret",
+            "error_description": "bad secret example-consumer-secret",
         }
         auth = SalesforceAuth(
             make_config(fake), transport=httpx.MockTransport(fake.handler)
         )
         with pytest.raises(SalesforceAuthError) as excinfo:
             auth.token()
-        assert "the-consumer-secret" not in str(excinfo.value)
+        assert "example-consumer-secret" not in str(excinfo.value)
         assert str(excinfo.value) == "Salesforce token request failed (client_credentials)"
         assert excinfo.value.error_code == "invalid_client"
 
@@ -156,21 +156,21 @@ class TestClientCredentialsFlow:
 class TestRefreshTokenFlow:
     def test_form_fields(self, fake):
         config = make_config(
-            fake, auth_flow="refresh_token", refresh_token="the-refresh-token"  # sanitizer:ignore
+            fake, auth_flow="refresh_token", refresh_token="example-refresh-token"
         )
         auth = SalesforceAuth(config, transport=httpx.MockTransport(fake.handler))
         auth.token()
         form = fake.token_requests[0]
         assert form["grant_type"] == "refresh_token"
-        assert form["refresh_token"] == "the-refresh-token"
+        assert form["refresh_token"] == "example-refresh-token"
         assert form["client_id"] == "the-consumer-key"
-        assert form["client_secret"] == "the-consumer-secret"
+        assert form["client_secret"] == "example-consumer-secret"
 
     def test_secret_optional(self, fake):
         config = make_config(
             fake,
             auth_flow="refresh_token",
-            refresh_token="the-refresh-token",  # sanitizer:ignore
+            refresh_token="example-refresh-token",
             client_secret="",
         )
         auth = SalesforceAuth(config, transport=httpx.MockTransport(fake.handler))
@@ -316,10 +316,10 @@ class TestRedaction:
         auth = SalesforceAuth(config, transport=httpx.MockTransport(fake.handler))
         auth.token()
         text = auth.redact(
-            "token TOKEN-1 secret the-consumer-secret refresh refresh-secret"
+            "token TOKEN-1 secret example-consumer-secret refresh refresh-secret"
         )
         assert "TOKEN-1" not in text
-        assert "the-consumer-secret" not in text
+        assert "example-consumer-secret" not in text
         assert "refresh-secret" not in text
         assert text.count(REDACTED) == 3
 
