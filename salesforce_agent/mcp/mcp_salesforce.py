@@ -8,7 +8,7 @@ destructive gating CONCEPT:SF-OS.governance.destructive-operations-delete-collec
 """
 
 import json
-from typing import Any
+from typing import Any, Literal
 
 from fastmcp import FastMCP
 from pydantic import Field
@@ -25,7 +25,7 @@ def register_soql_tools(mcp: FastMCP) -> None:
 
     @mcp.tool(tags={"query"})
     async def salesforce_soql(
-        action: str = Field(
+        action: Literal["explain", "query", "query_all", "search"] = Field(
             description=(
                 "Query action: 'query' (SOQL, auto-paginated via "
                 "nextRecordsUrl), 'query_all' (includes soft-deleted/"
