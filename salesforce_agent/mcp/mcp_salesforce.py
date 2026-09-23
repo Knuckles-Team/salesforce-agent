@@ -23,7 +23,18 @@ def _p(params_json: str) -> dict[str, Any]:
 def register_soql_tools(mcp: FastMCP) -> None:
     """Register the SOQL/SOSL query tool."""
 
-    @mcp.tool(tags={"query"})
+    @mcp.tool(
+        tags={"query"},
+        annotations={
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": True,
+        },
+        meta={
+            "eg.annotations": {"modalities_in": ["text"], "modalities_out": ["text"]}
+        },
+    )
     async def salesforce_soql(
         action: Literal["explain", "query", "query_all", "search"] = Field(
             description=(
