@@ -29,12 +29,10 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 import httpx
-from agent_utilities.base_utilities import get_logger, to_boolean
-from agent_utilities.core.config import setting
-from agent_utilities.core.transport_security import (
-    ResolvedTLSProfile,
-    resolve_configured_tls_profile,
-)
+from agent_connector_sdk.config import setting
+from agent_connector_sdk.tls.profile import ResolvedTLSProfile
+from agent_connector_sdk.tls.resolve import resolve_tls_profile
+from agent_connector_sdk.utilities import get_logger, to_boolean
 
 if TYPE_CHECKING:
     from salesforce_agent.api_client import Api
@@ -74,7 +72,7 @@ class SalesforceConfig:
     jwt_audience: str = ""
     timeout: float = 30.0
     tls_profile: ResolvedTLSProfile = field(
-        default_factory=lambda: resolve_configured_tls_profile("salesforce"),
+        default_factory=lambda: resolve_tls_profile("salesforce"),
         repr=False,
     )
     token_ttl_seconds: int = 1800
@@ -140,7 +138,7 @@ class SalesforceConfig:
             jwt_private_key_path=setting("SALESFORCE_JWT_PRIVATE_KEY_PATH", ""),
             jwt_audience=setting("SALESFORCE_JWT_AUDIENCE", ""),
             timeout=float(setting("SALESFORCE_TIMEOUT", "30")),
-            tls_profile=resolve_configured_tls_profile(
+            tls_profile=resolve_tls_profile(
                 "salesforce",
                 profile_name=setting("SALESFORCE_TLS_PROFILE", "") or None,
                 profile_ref=setting("SALESFORCE_TLS_PROFILE_REF", "") or None,
