@@ -14,7 +14,6 @@ CORE_MODULES = [
     "salesforce_agent.api_client",
 ]
 OPTIONAL_MODULES = {
-    "salesforce_agent.agent_server": "agent",
     "salesforce_agent.mcp_server": "mcp",
 }
 

@@ -26,10 +26,3 @@ def test_mcp_server_entrypoints_importable():
 
     assert callable(get_mcp_instance)
     assert callable(mcp_server)
-
-
-@pytest.mark.concept("SFDC-1.0")
-def test_agent_server_entrypoint_importable():
-    from salesforce_agent.agent_server import agent_server
-
-    assert callable(agent_server)

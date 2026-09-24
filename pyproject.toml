@@ -19,14 +19,12 @@ text = "MIT"
 
 [project.optional-dependencies]
 mcp = [ "agent-utilities[mcp]>=2.0.0,<3.0.0",]
-agent = [ "agent-utilities[agent-runtime,logfire]>=2.0.0,<3.0.0",]
 jwt = [ "cryptography>=49.0.0",]
-all = [ "salesforce-agent[mcp,agent,jwt,logfire]>=1.0.0",]
+all = [ "salesforce-agent[mcp,jwt]>=1.0.0",]
 test = [ "pytest-xdist>=3.8.0", "pytest>=9.1.1", "pytest-asyncio>=1.4.0", "pytest-cov>=7.1.0", "cryptography>=49.0.0",]
 
 [project.scripts]
 salesforce-mcp = "salesforce_agent.mcp_server:mcp_server"
-salesforce-agent = "salesforce_agent.agent_server:agent_server"
 
 [project.entry-points."agent_utilities.skill_providers"]
 salesforce-agent = "salesforce_agent.skills"

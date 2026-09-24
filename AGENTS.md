@@ -8,7 +8,7 @@
   `salesforce_response_models.py` (typed errors),
   `salesforce_input_models.py` (typed tool-input contracts), `api/` (thin
   httpx resource clients), `mcp/` (action-routed FastMCP tools),
-  `mcp_server.py`, `agent_server.py`
+  `mcp_server.py`
 - `tests/`: Mocked-httpx test suite (`FakeSalesforce` behind `httpx.MockTransport`)
 - `docs/`: Documentation site (mkdocs) + concept registry (`CONCEPT:SF-OS.config.sfdc-x`)
 

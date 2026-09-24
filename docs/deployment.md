@@ -106,15 +106,6 @@ docker compose -f docker/mcp.compose.yml up -d
 
 The MCP server listens on port `8000` (streamable-http) with a `/health` check.
 
-## Docker Compose (MCP + Agent)
-
-```bash
-docker compose -f docker/agent.compose.yml up -d
-```
-
-This brings up both the `salesforce-agent-mcp` service (port 8000) and the
-`salesforce-agent-agent` A2A service (port 9020, AG-UI web interface).
-
 ## Building the image
 
 ```bash
@@ -123,16 +114,6 @@ docker build -f docker/Dockerfile -t example/salesforce-agent:agent-local .
 
 A `docker/debug.Dockerfile` is provided for an in-place editable install with
 shell tooling and the Starship prompt.
-
-## A2A agent server
-
-```bash
-salesforce-agent                  # standalone A2A server
-```
-
-The agent connects to the MCP server via `MCP_URL`
-(`http://salesforce-agent-mcp:8000/mcp` in Compose) and exposes the A2A
-endpoint and AG-UI web interface on its port.
 
 ## Environment
 
