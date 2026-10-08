@@ -137,7 +137,7 @@ endpoint and AG-UI web interface on its port.
 ## Environment
 
 All configuration is via `SALESFORCE_*` environment variables — see
-`.env.example`. Mount secrets (client secret, JWT private key) from your
+`.env.example`. Mount secrets (client secret, JWT private key) from the operator's
 secret store; never bake them into the image. Keep
 `SALESFORCE_ALLOW_DESTRUCTIVE=False` in shared deployments. Per-domain tool
 toggles (`SOQLTOOL`, `RECORDSTOOL`, `DESCRIBETOOL`, `BULKTOOL`, `ADMINTOOL`)
