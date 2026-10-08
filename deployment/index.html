@@ -1126,7 +1126,7 @@ shell tooling and the Starship prompt.</p>
 endpoint and AG-UI web interface on its port.</p>
 <h2 id="environment">Environment<a class="headerlink" href="#environment" title="Permanent link">&para;</a></h2>
 <p>All configuration is via <code>SALESFORCE_*</code> environment variables — see
-<code>.env.example</code>. Mount secrets (client secret, JWT private key) from your
+<code>.env.example</code>. Mount secrets (client secret, JWT private key) from the operator's
 secret store; never bake them into the image. Keep
 <code>SALESFORCE_ALLOW_DESTRUCTIVE=False</code> in shared deployments. Per-domain tool
 toggles (<code>SOQLTOOL</code>, <code>RECORDSTOOL</code>, <code>DESCRIBETOOL</code>, <code>BULKTOOL</code>, <code>ADMINTOOL</code>)
