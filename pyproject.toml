@@ -79,3 +79,6 @@ include = [ "salesforce_agent*",]
 
 [tool.vulture]
 ignore_names = ["request", "config", "exc_info"]
+
+[tool.pipelines_hooks.ste]
+exempt = ["specs/*", "specs/**/*"]
