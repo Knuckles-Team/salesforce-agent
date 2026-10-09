@@ -287,7 +287,7 @@ def register_ingest_tools(mcp: FastMCP) -> None:
                 continue
             result = api.soql.query(soql, max_records=max_records)
             records = result.get("records", [])
-            ingested = ingest_records(sobject, records)
+            ingested = await ingest_records(sobject, records)
             summary[sobject] = {"listed": len(records), "ingested": ingested}
         return summary
 

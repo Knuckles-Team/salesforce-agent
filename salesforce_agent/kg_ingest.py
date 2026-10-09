@@ -1,9 +1,11 @@
-"""Native epistemic-graph ingestion for Salesforce CRM records.
+"""Epistemic-graph ingestion for Salesforce CRM records.
 
-All writes use the required ``agent_utilities.knowledge_graph.memory.native_ingest``
-primitive. Nodes use canonical ``node_type`` and edges use canonical ``relationship``;
-nodes and edges commit in one native transaction. Missing engine dependencies, rejected
-records, conflicts, and transaction failures propagate as ``NativeIngestError``.
+The salesforce-agent connector pushes CRM records into the ONE epistemic-graph
+knowledge graph as typed OWL nodes (``:Account``/``:Contact``/``:Opportunity``/
+``:Lead`` + ``:Person`` owner) + links through ``agent_connector_sdk.ingest`` --
+the generated ``SourceIngest`` client, not a local ingestion helper. Nodes use
+canonical ``node_type`` and edges use canonical ``relationship``.
+CONCEPT:AU-KG.ingest.enterprise-source-extractor.
 """
 
 from __future__ import annotations
@@ -11,37 +13,72 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from agent_utilities.knowledge_graph.memory.native_ingest import (
-    NativeIngestError,
-)
-from agent_utilities.knowledge_graph.memory.native_ingest import (
-    ingest_entities as _native_ingest_entities,
+from agent_connector_sdk.ingest import (
+    ChangeSet,
+    Entity,
+    IngestBinding,
+    IngestError,
+    KnowledgeIngest,
+    Relationship,
+    current_ingest,
 )
 
 logger = logging.getLogger("salesforce_agent.kg")
 
-_SOURCE = "salesforce-agent"
-_DOMAIN = "salesforce"
+_BINDING = IngestBinding(connector="salesforce-agent", stream="salesforce")
+
+_ENTITY_RESERVED_KEYS = frozenset({"id", "node_type"})
+_RELATIONSHIP_RESERVED_KEYS = frozenset({"source", "target", "relationship"})
 
 
-def ingest_entities(
+def _to_entity(record: dict[str, Any]) -> Entity:
+    return Entity(
+        id=record.get("id"),
+        node_type=record.get("node_type"),
+        properties={
+            key: value
+            for key, value in record.items()
+            if key not in _ENTITY_RESERVED_KEYS
+        },
+    )
+
+
+def _to_relationship(record: dict[str, Any]) -> Relationship:
+    properties = {
+        key: value
+        for key, value in record.items()
+        if key not in _RELATIONSHIP_RESERVED_KEYS
+    }
+    return Relationship(
+        source=record["source"],
+        target=record["target"],
+        relationship=record["relationship"],
+        properties=properties or None,
+    )
+
+
+async def ingest_entities(
     entities: list[dict[str, Any]],
     relationships: list[dict[str, Any]] | None = None,
     *,
-    source: str = _SOURCE,
-    domain: str = _DOMAIN,
-    client: Any | None = None,
-    graph: str | None = None,
+    ingest: KnowledgeIngest | None = None,
 ) -> dict[str, int]:
-    """Write canonical typed nodes and relationships in one native transaction."""
-    return _native_ingest_entities(
-        entities,
-        relationships,
-        source=source,
-        domain=domain,
-        client=client,
-        graph=graph,
+    """Write canonical typed nodes and relationships via the SDK ingest facade.
+
+    Uses canonical ``node_type`` / ``relationship`` structural fields and surfaces
+    a malformed change set or a refused commit as ``IngestError``.
+    """
+    if not entities:
+        raise IngestError("ingest_entities needs at least one entity")
+    change_set = ChangeSet(
+        entities=tuple(_to_entity(entity) for entity in entities),
+        relationships=tuple(
+            _to_relationship(relationship) for relationship in relationships or ()
+        ),
     )
+    service = ingest or current_ingest()
+    receipt = await service.submit(_BINDING, change_set)
+    return {"nodes": receipt.affected_count, "edges": receipt.relationship_count}
 
 
 # --------------------------------------------------------------------------- #
@@ -235,16 +272,15 @@ INGEST_QUERIES: dict[str, str] = {
 }
 
 
-def ingest_records(
+async def ingest_records(
     sobject: str,
     records: list[dict[str, Any]],
     *,
-    client: Any | None = None,
-    graph: str | None = None,
+    ingest: KnowledgeIngest | None = None,
 ) -> dict[str, int]:
     """Map a batch of ``sobject`` records → typed nodes/links and ingest them."""
     mapper = _MAPPERS.get(sobject)
     if mapper is None:
-        raise NativeIngestError(f"unsupported Salesforce object: {sobject!r}")
+        raise IngestError(f"unsupported Salesforce object: {sobject!r}")
     entities, relationships = mapper(records)
-    return ingest_entities(entities, relationships, client=client, graph=graph)
+    return await ingest_entities(entities, relationships, ingest=ingest)
