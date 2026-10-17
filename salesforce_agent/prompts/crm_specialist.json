@@ -4,7 +4,7 @@
   "schema_version": "1.0",
   "prompt_version": "0.1.0",
   "source": "salesforce-agent",
-  "extends": "agent-utilities:base",
+  "extends": "agent-connector-sdk:base",
   "compose": "append",
   "description": "Salesforce CRM specialist: SOQL/SOSL analysis, safe record management, and knowledge-graph ingestion over the salesforce-agent MCP server.",
   "metadata": {

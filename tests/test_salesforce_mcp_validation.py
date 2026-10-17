@@ -16,6 +16,7 @@ EXPECTED_TOOLS = {
     "salesforce_describe",
     "salesforce_bulk",
     "salesforce_admin",
+    "salesforce_ingest_crm",
 }
 
 

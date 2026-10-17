@@ -1,5 +1,5 @@
 [build-system]
-requires = [ "setuptools>=80.9.0", "wheel",]
+requires = [ "setuptools>=84.0.0", "wheel",]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -9,7 +9,7 @@ description = "Salesforce REST/SOQL/Bulk API 2.0 connector + MCP Server + A2A Se
 readme = "README.md"
 classifiers = [ "Development Status :: 4 - Beta", "License :: OSI Approved :: MIT License", "Environment :: Console", "Operating System :: POSIX :: Linux", "Programming Language :: Python :: 3",]
 requires-python = ">=3.12, <3.15"
-dependencies = [ "agent-connector-sdk>=0.1.0,<1.0.0", "agent-utilities>=2.0.0,<3.0.0", "httpx>=0.28.1",]
+dependencies = [ "agent-connector-sdk>=0.2.0,<1.0.0", "httpx>=0.28.1",]
 [[project.authors]]
 name = "Project Maintainers"
 email = "maintainers@users.noreply.github.com"
@@ -18,26 +18,24 @@ email = "maintainers@users.noreply.github.com"
 text = "MIT"
 
 [project.optional-dependencies]
-mcp = [ "agent-utilities[mcp]>=2.0.0,<3.0.0",]
-agent = [ "agent-utilities[agent-runtime,logfire]>=2.0.0,<3.0.0",]
-jwt = [ "cryptography>=49.0.0",]
-all = [ "salesforce-agent[mcp,agent,jwt,logfire]>=1.0.0",]
-test = [ "pytest-xdist>=3.8.0", "pytest>=9.1.1", "pytest-asyncio>=1.4.0", "pytest-cov>=7.1.0", "cryptography>=49.0.0",]
+mcp = [ "agent-connector-sdk>=0.2.0,<1.0.0",]
+jwt = [ "cryptography>=50.0.2",]
+all = [ "salesforce-agent[mcp,agent,jwt,logfire]>=1.0.1",]
+test = [ "pytest-xdist>=3.8.0", "pytest>=9.1.1", "pytest-asyncio>=1.4.0", "pytest-cov>=7.1.0", "cryptography>=50.0.2",]
 
 [project.scripts]
 salesforce-mcp = "salesforce_agent.mcp_server:mcp_server"
-salesforce-agent = "salesforce_agent.agent_server:agent_server"
 
-[project.entry-points."agent_utilities.skill_providers"]
+[project.entry-points."agent_connector_sdk.skill_providers"]
 salesforce-agent = "salesforce_agent.skills"
 
-[project.entry-points."agent_utilities.ontology_providers"]
+[project.entry-points."agent_connector_sdk.ontology_providers"]
 salesforce-agent = "salesforce_agent.ontology"
 
-[project.entry-points."agent_utilities.source_connector_providers"]
+[project.entry-points."agent_connector_sdk.source_connector_providers"]
 salesforce-agent = "salesforce_agent.connectors"
 
-[project.entry-points."agent_utilities.prompt_providers"]
+[project.entry-points."agent_connector_sdk.prompt_providers"]
 salesforce-agent = "salesforce_agent.prompts"
 
 [tool.uv.workspace]
@@ -48,12 +46,8 @@ include-package-data = true
 
 [tool.uv]
 override-dependencies = [
-    "fastmcp-slim[client,server]>=4.0.0b1",
+    "fastmcp-slim[client,server]>=4.1.0",
 ]
-
-[tool.uv.sources]
-agent-connector-sdk = { path = ".uv-workspace-siblings/agent-connector-sdk", editable = true }
-agent-utilities = { path = ".uv-workspace-siblings/agent-utilities", editable = true }
 
 [tool.ruff]
 line-length = 88
