@@ -1,6 +1,6 @@
 # salesforce-agent
 
-Salesforce **API + MCP Server + A2A Agent** for the Graph OS ecosystem — a
+Salesforce **API + MCP Server + A2A Agent** for the Arbora ecosystem — a
 typed, action-routed connector for the Salesforce REST, SOQL/SOSL, and Bulk API 2.0
 surface.
 
