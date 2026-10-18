@@ -1,5 +1,5 @@
 site_name: "salesforce-agent"
-site_description: "Salesforce REST/SOQL/Bulk API 2.0 connector + MCP Server — the Salesforce connector for the agent-utilities ecosystem."
+site_description: "Salesforce REST/SOQL/Bulk API 2.0 connector + MCP Server — the Salesforce connector for the Arbora ecosystem."
 site_url: "https://knuckles-team.github.io/salesforce-agent/"
 repo_name: "Knuckles-Team/salesforce-agent"
 repo_url: "https://github.com/Knuckles-Team/salesforce-agent"

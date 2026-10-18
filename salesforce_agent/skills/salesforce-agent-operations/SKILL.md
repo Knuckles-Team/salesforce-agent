@@ -2,12 +2,12 @@
 name: salesforce-agent-operations
 skill_type: skill
 description: >-
-  Operate salesforce-agent through its governed MCP and GraphOS capabilities, including salesforce crm knowledge graph, salesforce record management, salesforce soql query. Use when a request requires this provider's read, change, automation, ingestion, troubleshooting, or evidence workflows.
+  Operate salesforce-agent through its governed MCP and Arbora capabilities, including salesforce crm knowledge graph, salesforce record management, salesforce soql query. Use when a request requires this provider's read, change, automation, ingestion, troubleshooting, or evidence workflows.
 ---
 
 # Salesforce Agent Operations
 
-Use the provider's governed MCP tools through GraphOS delegation.
+Use the provider's governed MCP tools through Arbora delegation.
 
 ## Workflow
 
