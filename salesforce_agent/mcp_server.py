@@ -10,7 +10,13 @@ from fastmcp.utilities.logging import get_logger
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from salesforce_agent.api_client import Api
+from salesforce_agent.api import (
+    AdminClient,
+    BulkClient,
+    DescribeClient,
+    QueryClient,
+    RecordsClient,
+)
 from salesforce_agent.auth import get_client
 from salesforce_agent.mcp.mcp_salesforce import (
     register_admin_tools,
@@ -21,8 +27,27 @@ from salesforce_agent.mcp.mcp_salesforce import (
     register_soql_tools,
 )
 
-__version__ = "2.2.0"
+__version__ = "2.3.0"
 logger = get_logger(name="salesforce_agent")
+
+
+def _operation_targets() -> list[dict[str, Any]]:
+    """One operation-tool group per resource client of the ``Api`` facade."""
+    resources = {
+        "soql": QueryClient,
+        "records": RecordsClient,
+        "describe": DescribeClient,
+        "bulk": BulkClient,
+        "admin": AdminClient,
+    }
+    return [
+        {
+            "client_cls": client_cls,
+            "get_client": (lambda name=name: getattr(get_client(), name)),
+            "prefix": f"salesforce_{name}",
+        }
+        for name, client_cls in resources.items()
+    ]
 
 
 def get_mcp_instance() -> tuple[Any, ...]:
@@ -44,9 +69,8 @@ def get_mcp_instance() -> tuple[Any, ...]:
 
     register_tool_surface(
         mcp,
-        client_cls=Api,
-        get_client=get_client,
         service="salesforce-agent",
+        verbose_targets=_operation_targets(),
         registrars=[
             register_soql_tools,
             register_records_tools,

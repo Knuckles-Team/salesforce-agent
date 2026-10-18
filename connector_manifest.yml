@@ -135,8 +135,8 @@ schema_mappings:
 sync:
 - preset: salesforce-accounts
   server: salesforce-mcp
-  tool: salesforce_soql
-  action: query
+  tool: salesforce_soql_query
+  action: null
   records_path: records
   id_field: Id
   title_field: Name
@@ -144,13 +144,13 @@ sync:
   updated_field: null
   pagination: null
   doc_type: salesforce_account
-  tool_schema_sha256: e4ddfa83b19760793b7278dfa11bc9b89688dba3ef109ed92d67450cbc6d5880
+  tool_schema_sha256: 1933ac409fc622368416ff0e4ca41e84d809f7a139709bccb60f5097c5b6b6e9
   raw:
     server: salesforce-mcp
-    tool: salesforce_soql
-    action: query
+    tool: salesforce_soql_query
+    params_style: args
     params:
-      params_json: '{"soql": "SELECT Id, Name, Industry, Type, Website, Description FROM Account"}'
+      soql: "SELECT Id, Name, Industry, Type, Website, Description FROM Account"
     records_path: records
     id_field: Id
     title_field: Name
@@ -158,8 +158,8 @@ sync:
     doc_type: salesforce_account
 - preset: salesforce-opportunities
   server: salesforce-mcp
-  tool: salesforce_soql
-  action: query
+  tool: salesforce_soql_query
+  action: null
   records_path: records
   id_field: Id
   title_field: Name
@@ -167,13 +167,13 @@ sync:
   updated_field: null
   pagination: null
   doc_type: salesforce_opportunity
-  tool_schema_sha256: e4ddfa83b19760793b7278dfa11bc9b89688dba3ef109ed92d67450cbc6d5880
+  tool_schema_sha256: 1933ac409fc622368416ff0e4ca41e84d809f7a139709bccb60f5097c5b6b6e9
   raw:
     server: salesforce-mcp
-    tool: salesforce_soql
-    action: query
+    tool: salesforce_soql_query
+    params_style: args
     params:
-      params_json: '{"soql": "SELECT Id, Name, StageName, Amount, CloseDate, Description FROM Opportunity"}'
+      soql: "SELECT Id, Name, StageName, Amount, CloseDate, Description FROM Opportunity"
     records_path: records
     id_field: Id
     title_field: Name
