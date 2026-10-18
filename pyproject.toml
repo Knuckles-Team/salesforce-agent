@@ -20,7 +20,7 @@ text = "MIT"
 [project.optional-dependencies]
 mcp = [ "agent-connector-sdk[mcp]>=0.2.1,<1.0.0",]
 jwt = [ "cryptography>=50.0.2",]
-all = [ "salesforce-agent[mcp,agent,jwt,logfire]>=1.0.1",]
+all = [ "agent-connector-sdk[mcp]>=0.2.1,<1.0.0", "cryptography>=50.0.2",]
 test = [ "pytest-xdist>=3.8.0", "pytest>=9.1.1", "pytest-asyncio>=1.4.0", "pytest-cov>=7.1.0", "cryptography>=50.0.2",]
 
 [project.scripts]
