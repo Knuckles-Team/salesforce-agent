@@ -7,7 +7,6 @@
         "salesforce-mcp"
       ],
       "env": {
-        "MCP_TOOL_MODE": "intent",
         "ADMINTOOL": "True",
         "BULKTOOL": "True",
         "DESCRIBETOOL": "True",
