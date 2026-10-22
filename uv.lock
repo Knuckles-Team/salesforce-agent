@@ -1400,7 +1400,7 @@ wheels = [
 
 [[package]]
 name = "salesforce-agent"
-version = "2.3.0"
+version = "2.3.1"
 source = { editable = "." }
 dependencies = [
     { name = "agent-connector-sdk", extra = ["mcp"] },
