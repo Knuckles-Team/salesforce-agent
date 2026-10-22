@@ -25,7 +25,7 @@ from agent_connector_sdk.ingest import (
 
 logger = logging.getLogger("salesforce_agent.kg")
 
-_BINDING = IngestBinding(connector="salesforce-agent", stream="salesforce")
+_BINDING = IngestBinding(connector="salesforce-mcp", stream="salesforce")
 
 _ENTITY_RESERVED_KEYS = frozenset({"id", "node_type"})
 _RELATIONSHIP_RESERVED_KEYS = frozenset({"source", "target", "relationship"})
