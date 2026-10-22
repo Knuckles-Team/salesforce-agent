@@ -1,9 +1,9 @@
 {
   "api_version": "arbora.io/v1",
   "artifacts": {
-    "connector_manifest.yml": "68756705f22e8d4df8aca302a03f543e6b2fb509eeddc2b3c973701e6ceef757",
+    "connector_manifest.yml": "8f242e7c62b075786c8c47967e40d62aa44a967593782ae679771dc27e4693e8",
     "salesforce_agent/connectors/mcp_source_presets.json": "644ed7237882e5b5ac96b1c16696e1348a15f025c0d10c23745dfcd8ea6d0c87",
-    "salesforce_agent/connectors/tool_schema_fingerprints.json": "6e3d6a050bdf96f4249f83bf7158b4ffe0e8796b4944c8fcb2c8664c30c67d13",
+    "salesforce_agent/connectors/tool_schema_fingerprints.json": "f2db55d366dd1f4b9da00ac78433cbc0a627109d15a23d3a5bdda3d493e1c8f3",
     "salesforce_agent/ontology/fixtures/records.json": "b344913dc0bbc8999151a56c1802f1c15cf818888a0ab8aaa5063326b21e9043",
     "salesforce_agent/ontology/mappings/source.yaml": "a138feb24291bd26939a85e7e786dc158d145a7be056ae6cc3b69e8342fdaa3c",
     "salesforce_agent/ontology/migrations/manifest.json": "76e71d3e6fbb573e65cb9ce25868523b5aa8ba1f4cca15b266d343ee9d2b42fc",
@@ -22,7 +22,7 @@
     "bundle_schema": "2",
     "epistemic_graph": ">=2.27.0,<3"
   },
-  "connector": "salesforce-agent",
+  "connector": "salesforce-mcp",
   "kind": "ConnectorSourceAttestation",
   "live_certified": false,
   "mode": "offline-source",

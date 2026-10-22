@@ -1,4 +1,4 @@
-connector: salesforce-agent
+connector: salesforce-mcp
 ontology_source: salesforce
 schema_version: '1'
 resources:
