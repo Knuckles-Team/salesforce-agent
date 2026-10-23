@@ -70,7 +70,7 @@ async def test_ingest_entities_writes_nodes_and_edges(ingest):
     a_record = next(r for r in request.records if r.record_id == "a")
     assert a_record.payload["name"] == "Acme"
     assert request.relationships[0].relation_reference.endswith(
-        "resources/Contact/relations/worksAtAccount"
+        "relations/Contact/worksAtAccount"
     )
 
 
@@ -94,7 +94,7 @@ async def test_ingest_records_accounts_with_owner(ingest):
         r.record_id == "salesforce:User:005U" for r in request.records
     )
     assert request.relationships[0].relation_reference.endswith(
-        "resources/Account/relations/ownedBy"
+        "relations/Account/ownedBy"
     )
 
 
@@ -114,7 +114,7 @@ async def test_ingest_records_contact_links_account(ingest):
     # the SDK's persistence privacy guard redacts email-shaped values.
     assert contact.payload["email"] == "[REDACTED_EMAIL]"
     assert request.relationships[0].relation_reference.endswith(
-        "resources/Contact/relations/worksAtAccount"
+        "relations/Contact/worksAtAccount"
     )
 
 
@@ -133,7 +133,7 @@ async def test_ingest_records_opportunity_links_account(ingest):
     )
     assert opp.payload["stageName"] == "Won"
     assert request.relationships[0].relation_reference.endswith(
-        "resources/Opportunity/relations/opportunityForAccount"
+        "relations/Opportunity/opportunityForAccount"
     )
 
 
