@@ -13,9 +13,8 @@
 # (salesforce_soql / salesforce_records / salesforce_describe / salesforce_ingest_crm).
 # :Person (shared) is REUSED for the owning Salesforce User — never redefined here.
 
-:Account a owl:Class ;
-    rdfs:label "Account" ;
-    rdfs:comment "A company or organization tracked in Salesforce CRM (sObject Account)." .
+:Account a owl:Class .
+
 
 :Contact a owl:Class ;
     rdfs:label "Contact" ;
@@ -131,5 +130,4 @@
     rdfs:comment """Salesforce CRM model — accounts, contacts, opportunities, leads,
     cases and campaigns with their sales and service relationships — federated into
     the agent-connector-sdk knowledge-graph hub. Reuses the shared :Person for the owning
-    Salesforce User.""" ;
-    owl:imports <http://knuckles.team/kg/enterprise> .
+    Salesforce User.""" .
