@@ -1,0 +1,22 @@
+{
+  "schema_version": 2,
+  "spec_id": "CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT",
+  "owner_repo": "salesforce-agent",
+  "delivery_state": "VERIFIED",
+  "requirement_ids": [
+    "CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R001"
+  ],
+  "requirements": [
+    {
+      "id": "CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R001",
+      "title": "Default content",
+      "delivery_state": "VERIFIED",
+      "landed_in": [
+        "9cd46b2b13c5"
+      ],
+      "verified_by": [
+        "tests/test_default_content_surfaces.py:15"
+      ]
+    }
+  ]
+}
