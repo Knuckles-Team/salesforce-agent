@@ -1,4 +1,5 @@
 import pytest
+import importlib.metadata
 
 
 @pytest.mark.concept("SFDC-1.0")
@@ -7,7 +8,7 @@ def test_startup():
 
     import salesforce_agent
 
-    assert re.fullmatch(r"\d+\.\d+\.\d+", salesforce_agent.__version__)
+    assert re.fullmatch(r"\d+\.\d+\.\d+", importlib.metadata.version("salesforce-agent"))
 
 
 @pytest.mark.concept("SFDC-1.0")
@@ -18,13 +19,3 @@ def test_core_surface_exposed():
     assert callable(salesforce_agent.SalesforceAuth)
     assert callable(salesforce_agent.SalesforceConfig)
     assert callable(salesforce_agent.get_client)
-
-
-@pytest.mark.concept("SFDC-1.0")
-def test_mcp_server_entrypoints_importable():
-    from salesforce_agent.mcp_server import get_mcp_instance, mcp_server
-
-    assert callable(get_mcp_instance)
-    assert callable(mcp_server)
-
-

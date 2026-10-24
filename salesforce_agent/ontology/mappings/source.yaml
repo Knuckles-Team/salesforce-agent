@@ -1,5 +1,5 @@
 schema_version: '1'
-connector: salesforce-agent
+connector: salesforce-mcp
 ontology_source: salesforce
 sync:
 - preset: salesforce-accounts
