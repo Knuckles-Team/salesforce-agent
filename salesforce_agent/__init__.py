@@ -2,7 +2,11 @@
 
 from agent_connector_sdk.connector import Connector
 
+from salesforce_agent.api_client import Api
+from salesforce_agent.auth import SalesforceAuth, SalesforceConfig, get_client
 from salesforce_agent.mcp_server import _operation_targets
+
+__all__ = ["Api", "SalesforceAuth", "SalesforceConfig", "connector", "get_client"]
 
 connector = Connector(
     tools="salesforce_agent.mcp_server",
