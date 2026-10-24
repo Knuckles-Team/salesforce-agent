@@ -4,40 +4,33 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "salesforce-agent"
-version = "2.3.3"
+version = "2.3.4"
 description = "Salesforce REST/SOQL/Bulk API 2.0 connector + MCP Server + A2A Server for Agentic AI!"
 readme = "README.md"
 classifiers = [ "Development Status :: 4 - Beta", "License :: OSI Approved :: MIT License", "Environment :: Console", "Operating System :: POSIX :: Linux", "Programming Language :: Python :: 3",]
 requires-python = ">=3.12, <3.15"
-dependencies = [ "agent-connector-sdk[mcp]>=0.4.1,<1.0.0", "httpx>=0.28.1",]
+dependencies = [ "agent-connector-sdk[mcp]>=0.5.4,<0.6.0", "httpx>=0.28.1",]
 [[project.authors]]
-name = "Project Maintainers"
-email = "maintainers@users.noreply.github.com"
+name = "Repository Maintainers"
+email = "maintainers@knuckles.team"
 
 [project.license]
 text = "MIT"
 
 [project.optional-dependencies]
-mcp = [ "agent-connector-sdk[mcp]>=0.4.1,<1.0.0",]
 jwt = [ "cryptography>=50.0.2",]
 all = [ "agent-connector-sdk[mcp]>=0.4.1,<1.0.0", "cryptography>=50.0.2",]
 test = [ "pytest-xdist>=3.8.0", "pytest>=9.1.1", "pytest-asyncio>=1.4.0", "pytest-cov>=7.1.0", "cryptography>=50.0.2",]
 
 [project.scripts]
-salesforce-mcp = "salesforce_agent.mcp_server:mcp_server"
-
-[project.entry-points."agent_connector_sdk.skill_providers"]
-salesforce-agent = "salesforce_agent.skills"
-
-[project.entry-points."agent_connector_sdk.ontology_providers"]
-salesforce-agent = "salesforce_agent.ontology"
+salesforce-mcp = "agent_connector_sdk.cli:serve"
 
 [project.entry-points."agent_connector_sdk.prompt_providers"]
 salesforce-agent = "salesforce_agent.prompts"
 
 # The one declared connector identity: the fleet name (SDK-CONNECTOR-CONTROL-R071).
 [project.entry-points."agent_connector_sdk.connector"]
-salesforce-mcp = "salesforce_agent"
+salesforce-mcp = "salesforce_agent:connector"
 
 [tool.uv.workspace]
 members = ["."]
@@ -51,6 +44,7 @@ override-dependencies = [
 ]
 
 [tool.ruff]
+extend-exclude = ["tests", "scripts"]
 line-length = 88
 target-version = "py312"
 
@@ -78,3 +72,7 @@ ignore_names = ["request", "config", "exc_info"]
 
 [tool.pipelines_hooks.ste]
 exempt = ["specs/*", "specs/**/*"]
+
+[tool.pipelines.container]
+debug_apt = ["default-jre", "ripgrep", "tree", "fd-find", "curl", "nano", "build-essential", "cmake", "libssl-dev", "libcurl4-openssl-dev", "pkg-config", "cargo", "rustc"]
+limits = {"mcp" = {"memory_limit_env" = "AGENT_CONTAINER_MEMORY_LIMIT", "memory_limit" = "4g", "cpu_limit_env" = "AGENT_CONTAINER_CPU_LIMIT", "cpu_limit" = "2.0"}}

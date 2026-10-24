@@ -19,7 +19,7 @@ from epistemic_graph.generated.source_ingestion import SourceIngestionRequest
 
 from salesforce_agent.kg_ingest import (
     INGEST_QUERIES,
-    ingest_entities,
+    STREAM,
     ingest_records,
     map_leads,
 )
@@ -54,7 +54,7 @@ def ingest() -> tuple[KnowledgeIngest, _FakeTransport]:
 @pytest.mark.asyncio
 async def test_ingest_entities_writes_nodes_and_edges(ingest):
     service, transport = ingest
-    res = await ingest_entities(
+    res = await STREAM.entities(
         [
             {"id": "a", "node_type": "Account", "name": "Acme"},
             {"id": "b", "node_type": "Contact"},
@@ -160,14 +160,14 @@ def test_map_leads_converted_links():
 async def test_retired_structural_alias_is_rejected(ingest):
     service, _transport = ingest
     with pytest.raises(IngestError, match="node_type"):
-        await ingest_entities([{"id": "a", "type": "Account"}], ingest=service)
+        await STREAM.entities([{"id": "a", "type": "Account"}], ingest=service)
 
 
 @pytest.mark.asyncio
 async def test_empty_native_ingest_is_rejected(ingest):
     service, _transport = ingest
     with pytest.raises(IngestError, match="at least one entity"):
-        await ingest_entities([], ingest=service)
+        await STREAM.entities([], ingest=service)
 
 
 @pytest.mark.asyncio
