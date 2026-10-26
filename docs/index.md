@@ -73,3 +73,8 @@ full matrix (PyPI extras, Docker image, all transports, the agent server).
     Salesforce is a managed SaaS platform — there is no self-hosted deployment
     recipe, so this site intentionally omits the *Backing Platform* page that
     connectors to self-hostable systems carry.
+
+## Spec delivery
+
+The [spec delivery dashboard](spec-delivery/) reports the generated delivery
+status for this connector.
