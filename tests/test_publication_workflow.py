@@ -19,7 +19,6 @@ def _actions_on(workflow: dict):
 
 def test_pages_publishes_spec_dashboard_and_dispatches_manual_refresh():
 
-
     config = json.loads((ROOT / ".config/spec-dashboard.json").read_text())
     assert config == {
         "version": 1,
@@ -29,7 +28,6 @@ def test_pages_publishes_spec_dashboard_and_dispatches_manual_refresh():
 
 def test_legacy_docs_publisher_is_removed_and_release_flags_remain_canonical():
     assert not (ROOT / ".github/workflows/docs.yml").exists()
-
 
 
 def test_development_skill_has_real_delivery_contract_and_actual_tests():
