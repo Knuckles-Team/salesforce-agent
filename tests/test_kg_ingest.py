@@ -32,7 +32,9 @@ class _FakeTransport:
         self.requests: list[SourceIngestionRequest] = []
 
     async def source_status(self, _connector: str, _stream: str) -> Any:
-        return SimpleNamespace(accepted_checkpoint=None)
+        return SimpleNamespace(
+            connector=_connector, stream=_stream, accepted_checkpoint=None
+        )
 
     async def submit(self, request: SourceIngestionRequest) -> Any:
         self.requests.append(request)
@@ -85,14 +87,10 @@ async def test_ingest_records_accounts_with_owner(ingest):
     # 1 account + 1 owner Person node, 1 ownedBy edge
     assert res == {"nodes": 2, "edges": 1}
     request = transport.requests[0]
-    acct = next(
-        r for r in request.records if r.record_id == "salesforce:Account:001A"
-    )
+    acct = next(r for r in request.records if r.record_id == "salesforce:Account:001A")
     assert acct.payload["industry"] == "Tech"
     assert acct.payload["salesforceId"] == "001A"
-    assert any(
-        r.record_id == "salesforce:User:005U" for r in request.records
-    )
+    assert any(r.record_id == "salesforce:User:005U" for r in request.records)
     assert request.relationships[0].relation_reference.endswith(
         "relations/Account/ownedBy"
     )
