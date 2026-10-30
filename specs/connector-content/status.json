@@ -2,9 +2,11 @@
   "schema_version": 2,
   "spec_id": "CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT",
   "owner_repo": "salesforce-agent",
-  "delivery_state": "LANDED",
+  "delivery_state": "SPECIFIED",
   "requirement_ids": [
-    "CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R001"
+    "CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R001",
+    "CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R002",
+    "CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R003"
   ],
   "requirements": [
     {
@@ -14,6 +16,20 @@
       "landed_in": [
         "9cd46b2b13c5"
       ],
+      "verified_by": []
+    },
+    {
+      "id": "CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R002",
+      "title": "Contract class and access contract",
+      "delivery_state": "SPECIFIED",
+      "landed_in": [],
+      "verified_by": []
+    },
+    {
+      "id": "CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R003",
+      "title": "Record the `coversService` source (BLOCKED, owner: operator)",
+      "delivery_state": "SPECIFIED",
+      "landed_in": [],
       "verified_by": []
     }
   ]
