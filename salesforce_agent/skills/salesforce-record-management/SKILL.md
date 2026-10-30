@@ -12,7 +12,7 @@ description: >-
 license: MIT
 tags: [salesforce, crm, records, bulk, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '0.1.0'
 ---
 # Salesforce Record Management

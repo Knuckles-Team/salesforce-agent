@@ -10,7 +10,7 @@ license: MIT
 tags: [salesforce-agent, development, connector, test, gates]
 tier: repository
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '0.1.0'
 ---
 
@@ -18,7 +18,7 @@ metadata:
 
 This repository owns the Salesforce REST, SOQL, Bulk API, MCP, and optional A2A
 surfaces. Shared connector transports and contracts belong to
-`agent-connector-sdk`; admission and serving belong to their owning
+`scion-sdk`; admission and serving belong to their owning
 repositories. Read `AGENTS.md` before changing code and keep credentials,
 endpoints, and customer data out of source, logs, and skill content.
 
