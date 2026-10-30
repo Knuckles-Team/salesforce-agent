@@ -2,7 +2,7 @@
 
 The salesforce-agent connector pushes CRM records into the ONE epistemic-graph
 knowledge graph as typed OWL nodes (``:Account``/``:Contact``/``:Opportunity``/
-``:Lead`` + ``:Person`` owner) + links through ``agent_connector_sdk.ingest`` --
+``:Lead`` + ``:Person`` owner) + links through ``scion_sdk.ingest`` --
 the generated ``SourceIngest`` client, not a local ingestion helper. Nodes use
 canonical ``node_type`` and edges use canonical ``relationship``.
 CONCEPT:AU-KG.ingest.enterprise-source-extractor.
@@ -13,7 +13,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from agent_connector_sdk.ingest import (
+from scion_sdk.ingest import (
     IngestError,
     KnowledgeIngest,
     SourceStream,

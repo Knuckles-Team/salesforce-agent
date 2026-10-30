@@ -129,5 +129,5 @@
     rdfs:label "Salesforce CRM Ontology" ;
     rdfs:comment """Salesforce CRM model — accounts, contacts, opportunities, leads,
     cases and campaigns with their sales and service relationships — federated into
-    the agent-connector-sdk knowledge-graph hub. Reuses the shared :Person for the owning
+    the scion-sdk knowledge-graph hub. Reuses the shared :Person for the owning
     Salesforce User.""" .

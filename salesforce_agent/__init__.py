@@ -1,6 +1,6 @@
 """CONCEPT:AU-ECO.messaging.native-backend-abstraction Unified ecosystem initialization dynamic check."""
 
-from agent_connector_sdk.connector import Connector
+from scion_sdk.connector import Connector
 
 from salesforce_agent.api_client import Api
 from salesforce_agent.auth import SalesforceAuth, SalesforceConfig, get_client

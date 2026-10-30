@@ -12,7 +12,7 @@ description: >-
 license: MIT
 tags: [salesforce, crm, knowledge-graph, ingestion, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '0.1.0'
 ---
 # Salesforce CRM → Knowledge Graph
