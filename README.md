@@ -28,7 +28,7 @@
 
 ## Overview
 
-**The Salesforce connector for the agent-connector-sdk fleet** — an owned thin
+**The Salesforce connector for the scion-sdk fleet** — an owned thin
 httpx wrapper over the Salesforce REST API exposed as a FastMCP server and an
 A2A agent. REST + SOQL/SOSL + Bulk API 2.0 + metadata describe, with safety
 gates designed for autonomous agents.
@@ -50,7 +50,7 @@ graph TD
 ## Installation
 
 > **Install the connector-focused `[mcp]` extra.** Examples use `salesforce-agent[mcp]` to add
-> FastMCP / FastAPI through `agent-connector-sdk[mcp]`; the required Agent Utilities core
+> FastMCP / FastAPI through `scion-sdk[mcp]`; the required Agent Utilities core
 > still carries `epistemic-graph[full]`. The `[agent]` extra also
 > enables model orchestration.
 
@@ -59,8 +59,8 @@ Pick the extra that matches what the operator want to run:
 | Extra | Installs | Use when |
 |-------|----------|----------|
 | `salesforce-agent` (core) | Owned thin httpx Salesforce client (no server tooling) | The operator only use the **Python `Api` client** |
-| `salesforce-agent[mcp]` | Connector-focused MCP server (`agent-connector-sdk[mcp]` — FastMCP/FastAPI + `epistemic-graph[full]`) | The operator run the **MCP server** (smallest server install / image) |
-| `salesforce-agent[agent]` | Agent runtime (`agent-connector-sdk[agent-runtime,logfire]` — model orchestration + `epistemic-graph[full]`) | The operator run the **integrated agent** |
+| `salesforce-agent[mcp]` | Connector-focused MCP server (`scion-sdk[mcp]` — FastMCP/FastAPI + `epistemic-graph[full]`) | The operator run the **MCP server** (smallest server install / image) |
+| `salesforce-agent[agent]` | Agent runtime (`scion-sdk[agent-runtime,logfire]` — model orchestration + `epistemic-graph[full]`) | The operator run the **integrated agent** |
 | `salesforce-agent[jwt]` | + `cryptography` for the JWT bearer flow | The operator authenticate via OAuth2 JWT bearer |
 | `salesforce-agent[all]` | Everything (`mcp` + `agent` + `jwt` + `logfire`) | Development / all surfaces |
 
@@ -192,7 +192,7 @@ cached with expiry tracking and refreshed transparently (plus one retry on
 | `BULKTOOL` | `True` |  |
 | `ADMINTOOL` | `True` |  |
 
-#### Inherited agent-connector-sdk variables (apply to every connector)
+#### Inherited scion-sdk variables (apply to every connector)
 
 | Variable | Example | Description |
 |----------|---------|-------------|
@@ -213,7 +213,7 @@ cached with expiry tracking and refreshed transparently (plus one retry on
 | `MODEL_ID` | `gpt-4o` | Model id for the agent |
 | `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
 
-_38 package + 16 inherited variable(s). Auto-generated from `.env.example` + the shared agent-connector-sdk set — do not edit._
+_38 package + 16 inherited variable(s). Auto-generated from `.env.example` + the shared scion-sdk set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
 
 
@@ -310,15 +310,15 @@ pre-commit run --all-files   # must be fully green before committing
 MIT — see [LICENSE](LICENSE).
 
 
-<!-- BEGIN agent-connector-sdk-deployment (generated; do not edit between markers) -->
+<!-- BEGIN scion-sdk-deployment (generated; do not edit between markers) -->
 
-## Deploy with `agent-connector-sdk-deployment`
+## Deploy with `scion-sdk-deployment`
 
-Provision this package with the consolidated **`agent-connector-sdk-deployment`**
+Provision this package with the consolidated **`scion-sdk-deployment`**
 workflow. It selects an installed-package, editable-source, or immutable-container
 path; records only runtime secret and TLS-profile references in `AgentConfig`; and
 runs doctor, registration, policy, observability, and rollback gates. Ask your agent
-to **"deploy `salesforce-agent` with agent-connector-sdk-deployment"**.
+to **"deploy `salesforce-agent` with scion-sdk-deployment"**.
 
 | Install mode | Command |
 |------|---------|
@@ -330,7 +330,7 @@ The repository embeds no deployment profile, credential value, certificate path,
 environment-specific endpoint. Supply those at runtime through `AgentConfig` and the
 configured secret provider.
 
-<!-- END agent-connector-sdk-deployment -->
+<!-- END scion-sdk-deployment -->
 
 <!-- GOVERNED-CAPABILITY:START -->
 ## Governed capability contract

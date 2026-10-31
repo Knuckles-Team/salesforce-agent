@@ -30,10 +30,10 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 import httpx
-from agent_connector_sdk.config import setting
-from agent_connector_sdk.tls.profile import ResolvedTLSProfile
-from agent_connector_sdk.tls.resolve import resolve_tls_profile
-from agent_connector_sdk.utilities import to_boolean
+from scion_sdk.config import setting
+from scion_sdk.tls.profile import ResolvedTLSProfile
+from scion_sdk.tls.resolve import resolve_tls_profile
+from scion_sdk.utilities import to_boolean
 
 if TYPE_CHECKING:
     from salesforce_agent.api_client import Api
