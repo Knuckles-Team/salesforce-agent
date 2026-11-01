@@ -8,7 +8,7 @@ This repository owns the specs with the ID prefix `CONN-SALESFORCE-AGENT`. The c
 
 ## Add a spec
 
-Read the existing specs first. Extend the spec that owns the behavior. Create a spec only for a capability that no spec owns. Copy [`_template/`](_template/) to `specs/<area>/`, set the ID to `CONN-SALESFORCE-AGENT` or `CONN-SALESFORCE-AGENT-<AREA>`, and add one index line below.
+Read the existing specs first. Extend the spec that owns the behavior. Create a spec only for a capability that no spec owns. Copy the files of `.specify/templates/` to `specs/<area>/`, set the ID to `CONN-SALESFORCE-AGENT` or `CONN-SALESFORCE-AGENT-<AREA>`, and add one index line below.
 
 ## Local specifications
 
