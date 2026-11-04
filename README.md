@@ -51,7 +51,7 @@ graph TD
 
 > **Install the connector-focused `[mcp]` extra.** Examples use `salesforce-agent[mcp]` to add
 > FastMCP / FastAPI through `scion-sdk[mcp]`; the required Agent Utilities core
-> still carries `epistemic-graph[full]`. The `[agent]` extra also
+> still carries `medulla[full]`. The `[agent]` extra also
 > enables model orchestration.
 
 Pick the extra that matches what the operator want to run:
@@ -59,15 +59,15 @@ Pick the extra that matches what the operator want to run:
 | Extra | Installs | Use when |
 |-------|----------|----------|
 | `salesforce-agent` (core) | Owned thin httpx Salesforce client (no server tooling) | The operator only use the **Python `Api` client** |
-| `salesforce-agent[mcp]` | Connector-focused MCP server (`scion-sdk[mcp]` — FastMCP/FastAPI + `epistemic-graph[full]`) | The operator run the **MCP server** (smallest server install / image) |
-| `salesforce-agent[agent]` | Agent runtime (`scion-sdk[agent-runtime,logfire]` — model orchestration + `epistemic-graph[full]`) | The operator run the **integrated agent** |
+| `salesforce-agent[mcp]` | Connector-focused MCP server (`scion-sdk[mcp]` — FastMCP/FastAPI + `medulla[full]`) | The operator run the **MCP server** (smallest server install / image) |
+| `salesforce-agent[agent]` | Agent runtime (`scion-sdk[agent-runtime,logfire]` — model orchestration + `medulla[full]`) | The operator run the **integrated agent** |
 | `salesforce-agent[jwt]` | + `cryptography` for the JWT bearer flow | The operator authenticate via OAuth2 JWT bearer |
 | `salesforce-agent[all]` | Everything (`mcp` + `agent` + `jwt` + `logfire`) | Development / all surfaces |
 
 ```bash
 pip install salesforce-agent            # core client only
 pip install "salesforce-agent[mcp]"     # + FastMCP server
-pip install "salesforce-agent[agent]"   # + Pydantic AI A2A agent (epistemic-graph engine)
+pip install "salesforce-agent[agent]"   # + Pydantic AI A2A agent (medulla engine)
 pip install "salesforce-agent[jwt]"     # + cryptography for the JWT bearer flow
 pip install "salesforce-agent[all]"     # everything
 ```
@@ -78,8 +78,8 @@ One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `
 
 | Image tag | Build target | Contents | Entrypoint |
 |-----------|--------------|----------|------------|
-| `example/salesforce-agent:mcp` | `--target mcp` | `salesforce-agent[mcp]` — **connector-focused**, includes `epistemic-graph[full]`; no model-orchestration stack | `salesforce-mcp` |
-| `example/salesforce-agent@sha256:<digest>` | `--target agent` (default) | `salesforce-agent[agent]` — **agent runtime**, model orchestration + `epistemic-graph[full]` | `salesforce-agent` |
+| `example/salesforce-agent:mcp` | `--target mcp` | `salesforce-agent[mcp]` — **connector-focused**, includes `medulla[full]`; no model-orchestration stack | `salesforce-mcp` |
+| `example/salesforce-agent@sha256:<digest>` | `--target agent` (default) | `salesforce-agent[agent]` — **agent runtime**, model orchestration + `medulla[full]` | `salesforce-agent` |
 
 ```bash
 docker build --target mcp   -t example/salesforce-agent:mcp    docker/   # connector-focused MCP server
@@ -89,16 +89,16 @@ docker build --target agent -t example/salesforce-agent:agent-local docker/   # 
 `docker/mcp.compose.yml` runs the connector-focused `:mcp` server; `docker/agent.compose.yml` runs the
 agent (`immutable agent digest`) with a co-located `:mcp` sidecar.
 
-### Knowledge-graph database (`epistemic-graph`)
+### Knowledge-graph database (`medulla`)
 
-Both `[mcp]` and `[agent]` carry the **epistemic-graph** engine through the required
-Agent Utilities core dependency (`epistemic-graph[full]`). The `[mcp]` extra keeps
+Both `[mcp]` and `[agent]` carry the **medulla** engine through the required
+Agent Utilities core dependency (`medulla[full]`). The `[mcp]` extra keeps
 the server connector-focused; `[agent]` also enables model orchestration. Local
 deployments can use the bundled engine. For production or shared state, run
-**epistemic-graph as a dedicated database service** and configure the runtime to use it.
+**medulla as a dedicated database service** and configure the runtime to use it.
 Deployment recipes (single-node + Raft HA), connection configuration, and architecture
 diagrams are documented in the
-[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
+[medulla deployment guide](https://knuckles-team.github.io/medulla/deployment/).
 
 ## MCP Tools
 

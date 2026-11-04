@@ -1,6 +1,6 @@
 """Epistemic-graph ingestion for Salesforce CRM records.
 
-The salesforce-agent connector pushes CRM records into the ONE epistemic-graph
+The salesforce-agent connector pushes CRM records into the ONE medulla
 knowledge graph as typed OWL nodes (``:Account``/``:Contact``/``:Opportunity``/
 ``:Lead`` + ``:Person`` owner) + links through ``scion_sdk.ingest`` --
 the generated ``SourceIngest`` client, not a local ingestion helper. Nodes use

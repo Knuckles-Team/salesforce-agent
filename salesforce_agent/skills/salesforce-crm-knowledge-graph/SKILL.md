@@ -2,7 +2,7 @@
 name: salesforce-crm-knowledge-graph
 skill_type: skill
 description: >-
-  Natively ingest Salesforce CRM objects into the epistemic-graph knowledge graph as
+  Natively ingest Salesforce CRM objects into the medulla knowledge graph as
   typed OWL nodes over the salesforce-agent MCP server — accounts, contacts,
   opportunities, and leads become :Account/:Contact/:Opportunity/:Lead nodes (with
   OwnerId as a shared :Person) linked by :worksAtAccount / :opportunityForAccount /
@@ -17,7 +17,7 @@ metadata:
 ---
 # Salesforce CRM → Knowledge Graph
 
-Push Salesforce CRM data into the ONE epistemic-graph knowledge graph as **typed OWL
+Push Salesforce CRM data into the ONE medulla knowledge graph as **typed OWL
 nodes** matching `salesforce_agent/ontology/salesforce.ttl`. The tool runs a bounded
 per-sObject SOQL SELECT and maps each record to a typed node with provenance
 (`source=salesforce-agent`, `domain=salesforce`) and its relationships, via the fast
@@ -35,7 +35,7 @@ engine client. It is best-effort: with no reachable engine it no-ops (`ingested:
 
 ## Prerequisites & environment
 Connect via the `mcp-client` skill against the **`salesforce-agent`** MCP server (same
-OAuth2 connected-app env as the other skills). A reachable epistemic-graph engine is
+OAuth2 connected-app env as the other skills). A reachable medulla engine is
 optional: the tool degrades to a no-op when none is present, so it is safe to call
 without KG infrastructure.
 

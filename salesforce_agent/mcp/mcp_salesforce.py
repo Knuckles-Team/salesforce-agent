@@ -264,7 +264,7 @@ def register_ingest_tools(mcp: FastMCP) -> None:
             ),
         ),
     ) -> Any:
-        """Natively ingest Salesforce CRM records into epistemic-graph as typed nodes.
+        """Natively ingest Salesforce CRM records into medulla as typed nodes.
 
         Runs the per-sObject SOQL SELECT for each requested object and pushes the
         records (with their :worksAtAccount / :opportunityForAccount /
