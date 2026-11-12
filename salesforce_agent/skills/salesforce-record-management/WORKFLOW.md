@@ -8,7 +8,7 @@ The write side of a Salesforce org: single-record CRUD, heterogeneous `composite
 batches (25 dependent subrequests), homogeneous `collections` (200 records/call), and
 Bulk API 2.0 for large asynchronous loads. Destructive operations (`delete`,
 `collections_delete`, DELETE subrequests, bulk `delete`/`hardDelete`) are refused
-unless `SALESFORCE_ALLOW_DESTRUCTIVE` is enabled.
+unless the caller confirms (`confirm=true`).
 
 ## When to use
 - Insert / update / upsert one record (upsert addresses by an external-id field).
@@ -24,8 +24,8 @@ unless `SALESFORCE_ALLOW_DESTRUCTIVE` is enabled.
 
 ## Prerequisites & environment
 Connect via the `mcp-client` skill against the **`salesforce-agent`** MCP server (same
-OAuth2 connected-app env as `salesforce-soql-query`). To allow deletes set
-`SALESFORCE_ALLOW_DESTRUCTIVE=true`; leave it unset for read/write-only safety.
+OAuth2 connected-app env as `salesforce-soql-query`). Deletes ask the caller
+to confirm (`confirm=true`).
 
 ## Tools
 | Tool | Purpose |
@@ -74,8 +74,8 @@ Bulk load: `salesforce_bulk_create_ingest_job` (`sobject` = `Lead`, `operation` 
   raises a bad-request rather than silently truncating.
 - Each collections record needs `attributes.type`; updates also need `Id`.
 - `update` returns HTTP 204 (no body); treat a non-error as success.
-- Deletes are **gated**: without `SALESFORCE_ALLOW_DESTRUCTIVE` they raise a blocked-op
-  error — this includes DELETE subrequests inside `composite`.
+- Deletes are **gated**: without `confirm=true` the SDK refuses the call and nothing is sent —
+  this includes `composite` and delete ingest jobs, which are declared destructive.
 - Bulk is asynchronous: after `close` poll `status` until `JobComplete`, then fetch
   `results` (`successful`/`failed`/`unprocessed`, size-capped).
 

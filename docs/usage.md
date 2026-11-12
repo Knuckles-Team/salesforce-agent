@@ -44,8 +44,8 @@ api.admin.run_report("00O...")          # sync; Salesforce caps at 2000 rows
 ```
 
 Destructive calls (`records.delete`, `records.collections_delete`, bulk
-`delete`/`hardDelete` jobs, DELETE composite subrequests) raise
-`DestructiveOperationBlockedError` unless `allow_destructive` is enabled.
+`delete`/`hardDelete` jobs, DELETE composite subrequests) are declared destructive:
+the SDK asks the caller to confirm (`confirm=true`) before any request.
 
 ## MCP server
 

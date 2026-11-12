@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2026-11-12
+
+### Changed
+- Destructive operations use the SDK's one declaration and guard: record delete, collections delete, composite and Bulk ingest-job creation are destructive tools that take the standard `confirm` argument. The `SALESFORCE_ALLOW_DESTRUCTIVE` setting, the `allow_destructive` config field and `DestructiveOperationBlockedError` are removed; the one operator setting is `SCION_ALLOW_DESTRUCTIVE`.
+- Require `scion-sdk[mcp]>=0.10.2,<0.11`.
+
 ## [2.3.8] - 2026-11-12
 
 ### Removed

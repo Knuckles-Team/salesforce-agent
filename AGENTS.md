@@ -66,9 +66,9 @@ sequenceDiagram
 ## Domain Rules
 - Every API method cites its Salesforce documentation URL in the docstring.
 - Destructive paths (record remove, collections remove, bulk remove/hardDelete,
-  Remove composite subrequests) MUST stay behind `allow_destructive`
-  (`SALESFORCE_ALLOW_DESTRUCTIVE`, default False) — enforce in the API layer,
-  not just the tools.
+  Remove composite subrequests) MUST be declared with the SDK `destructive_operation`
+  on the API method — never a connector-local flag. The SDK asks the caller to
+  confirm; `SCION_ALLOW_DESTRUCTIVE` is the one operator setting.
 - Never log or raise raw tokens/secrets — route messages through
   `SalesforceAuth.redact`.
 - Keep result surfaces capped: SOQL per-call record cap, bulk results byte cap.

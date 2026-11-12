@@ -18,7 +18,7 @@ _INVALID_ARGUMENT = Refusal(
 )
 _DESTRUCTIVE_BLOCKED = Refusal(
     "DESTRUCTIVE_BLOCKED",
-    "SALESFORCE_ALLOW_DESTRUCTIVE is not set, so deletes are refused",
+    "the caller did not confirm the destructive operation",
 )
 _NO_ENGINE = Refusal(
     "NO_ENGINE", "no knowledge-graph engine is reachable, so ingested is null"

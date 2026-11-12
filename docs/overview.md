@@ -47,9 +47,9 @@ Operation tools are named `salesforce_<resource>_<operation>` and take typed arg
 | Bulk API 2.0 | `salesforce_bulk_create_ingest_job`, `_upload`, `_close`, `_abort`, `_status`, `_list_jobs`, `_delete_job`, `_results` |
 | Admin | `salesforce_admin_user_info`, `_org_info`, `_list_reports`, `_run_report` |
 | Graph | `salesforce_ingest_crm` |
- by `SALESFORCE_ALLOW_DESTRUCTIVE` (default `False`).
+ by the SDK confirmation (`confirm=true`).
 
-`*` gated by `SALESFORCE_ALLOW_DESTRUCTIVE` (default `False`).
+`*` gated by the SDK confirmation (`confirm=true`).
 
 ## Auth-flow matrix
 

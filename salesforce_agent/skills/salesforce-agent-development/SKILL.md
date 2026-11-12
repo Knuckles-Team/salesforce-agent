@@ -64,8 +64,8 @@ fix failures at their source instead of bypassing them.
 
 - Mock Salesforce requests with the existing `FakeSalesforce` transport; never
   use live org credentials in local gates.
-- Keep destructive record, collection, and Bulk API paths behind
-  `SALESFORCE_ALLOW_DESTRUCTIVE` and enforce that policy in the API layer.
+- Declare destructive record, collection, composite, and Bulk API paths with the SDK
+  `destructive_operation`; never add a connector-local flag.
 - Cite the Salesforce documentation URL in every API method docstring.
 - Keep `salesforce_agent/skills/` package data intact when adding skills.
 - Documentation lives under `docs/` and the generated delivery status comes

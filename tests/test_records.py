@@ -5,7 +5,6 @@ import json
 import pytest
 
 from salesforce_agent.salesforce_response_models import (
-    DestructiveOperationBlockedError,
     SalesforceBadRequestError,
 )
 
@@ -44,31 +43,10 @@ class TestCrud:
 
 @pytest.mark.concept("SFDC-1.3")
 class TestDeleteGating:
-    def test_delete_blocked_by_default(self, fake, api):
-        with pytest.raises(DestructiveOperationBlockedError):
-            api.records.delete("Account", "001A")
-        assert fake.api_requests == []  # never reached the wire
-
-    def test_delete_allowed_when_enabled(self, fake, api_destructive):
-        result = api_destructive.records.delete("Account", "001A")
+    def test_delete_runs(self, fake, api):
+        result = api.records.delete("Account", "001A")
         assert result["success"] is True
         assert fake.api_requests[-1].method == "DELETE"
-
-    def test_collections_delete_blocked_by_default(self, fake, api):
-        with pytest.raises(DestructiveOperationBlockedError):
-            api.records.collections_delete(["001A", "001B"])
-
-    def test_composite_delete_subrequest_blocked(self, fake, api):
-        with pytest.raises(DestructiveOperationBlockedError):
-            api.records.composite(
-                [
-                    {
-                        "method": "delete",
-                        "url": "/services/data/v62.0/sobjects/Account/001A",
-                        "referenceId": "del1",
-                    }
-                ]
-            )
 
 
 @pytest.mark.concept("SFDC-1.2")
@@ -139,17 +117,13 @@ class TestCollections:
         with pytest.raises(SalesforceBadRequestError, match="no records"):
             api.records.collections_update([])
 
-    def test_collections_delete_when_enabled(self, fake, api_destructive):
-        result = api_destructive.records.collections_delete(
-            ["001A", "001B"], all_or_none=True
-        )
+    def test_collections_delete_when_enabled(self, fake, api):
+        result = api.records.collections_delete(["001A", "001B"], all_or_none=True)
         assert [r["id"] for r in result] == ["001A", "001B"]
         request = fake.api_requests[-1]
         assert request.url.params["ids"] == "001A,001B"
         assert request.url.params["allOrNone"] == "true"
 
-    def test_collections_delete_caps_at_200(self, fake, api_destructive):
+    def test_collections_delete_caps_at_200(self, fake, api):
         with pytest.raises(SalesforceBadRequestError, match="at most 200"):
-            api_destructive.records.collections_delete(
-                [f"001{i:03d}" for i in range(201)]
-            )
+            api.records.collections_delete([f"001{i:03d}" for i in range(201)])
