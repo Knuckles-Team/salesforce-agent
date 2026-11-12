@@ -5,11 +5,11 @@
 ```mermaid
 flowchart LR
     subgraph MCP["FastMCP server (salesforce-mcp)"]
-        T1[salesforce_soql]
-        T2[salesforce_records]
-        T3[salesforce_describe]
-        T4[salesforce_bulk]
-        T5[salesforce_admin]
+        T1[salesforce_soql_*]
+        T2[salesforce_records_*]
+        T3[salesforce_describe_*]
+        T4[salesforce_bulk_*]
+        T5[salesforce_admin_*]
     end
     subgraph API["salesforce_agent.api"]
         Q[QueryClient]
@@ -37,15 +37,17 @@ flowchart LR
     AUTH --> SF
 ```
 
-## Tool surface (action-routed)
+Operation tools are named `salesforce_<resource>_<operation>` and take typed arguments; no tool takes an `action`.
 
-| Tool | Actions |
-|------|---------|
-| `salesforce_soql` | `query` (auto-paginated, capped), `query_all` (soft-deleted/archived), `explain`, `search` (SOSL) |
-| `salesforce_records` | `get`, `create`, `update`, `upsert`, `delete`*, `composite` (≤25 subrequests), `collections_create`/`collections_update` (≤200), `collections_delete`* |
-| `salesforce_describe` | `global`, `sobject` (fields/relationships/picklists), `record_counts`, `limits` |
-| `salesforce_bulk` | `create_job` (insert/update/upsert/`delete`*/`hardDelete`*), `upload` (CSV), `close`, `abort`, `status`, `list_jobs`, `delete_job`, `results` (size-capped) |
-| `salesforce_admin` | `user_info`, `org_info`, `list_reports`, `run_report` (sync, platform-capped at 2000 rows). Flows are **out of scope for v1**. |
+| Resource | Tools |
+|----------|-------|
+| Query | `salesforce_soql_query`, `salesforce_soql_explain`, `salesforce_soql_search` |
+| Records | `salesforce_records_get`, `_create`, `_update`, `_upsert`, `_delete`*, `_composite`, `_collections_create`, `_collections_update`, `_collections_delete`* |
+| Describe | `salesforce_describe_global_describe`, `_sobject`, `_record_counts`, `_limits` |
+| Bulk API 2.0 | `salesforce_bulk_create_ingest_job`, `_upload`, `_close`, `_abort`, `_status`, `_list_jobs`, `_delete_job`, `_results` |
+| Admin | `salesforce_admin_user_info`, `_org_info`, `_list_reports`, `_run_report` |
+| Graph | `salesforce_ingest_crm` |
+ by `SALESFORCE_ALLOW_DESTRUCTIVE` (default `False`).
 
 `*` gated by `SALESFORCE_ALLOW_DESTRUCTIVE` (default `False`).
 

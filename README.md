@@ -102,33 +102,19 @@ diagrams are documented in the
 
 ## MCP Tools
 
-Consolidated, action-routed tools. Each takes `action` and `params_json`. The table below is auto-generated from the MCP server — do not edit by hand.
+One typed tool per Salesforce operation, plus the knowledge-graph ingest tool. Operation tools are named `salesforce_<resource>_<operation>` and take typed arguments; no tool takes an `action`.
 
-<!-- MCP-TOOLS-TABLE:START -->
+| Resource | Tools |
+|----------|-------|
+| Query | `salesforce_soql_query`, `salesforce_soql_explain`, `salesforce_soql_search` |
+| Records | `salesforce_records_get`, `_create`, `_update`, `_upsert`, `_delete`*, `_composite`, `_collections_create`, `_collections_update`, `_collections_delete`* |
+| Describe | `salesforce_describe_global_describe`, `_sobject`, `_record_counts`, `_limits` |
+| Bulk API 2.0 | `salesforce_bulk_create_ingest_job`, `_upload`, `_close`, `_abort`, `_status`, `_list_jobs`, `_delete_job`, `_results` |
+| Admin | `salesforce_admin_user_info`, `_org_info`, `_list_reports`, `_run_report` |
+| Graph | `salesforce_ingest_crm` |
 
-#### Condensed action-routed tools (default — `MCP_TOOL_MODE=condensed`)
+`*` gated by `SALESFORCE_ALLOW_DESTRUCTIVE` (default `False`).
 
-| MCP Tool | Toggle Env Var | Description |
-|----------|----------------|-------------|
-| `salesforce_admin` | `ADMINTOOL` | Inspect the current user/org and run analytics reports. |
-| `salesforce_bulk` | `BULKTOOL` | Drive Bulk API 2.0 ingest jobs: create, upload, close, results. |
-| `salesforce_describe` | `DESCRIBETOOL` | Discover org schema, record counts, and limits/API usage. |
-| `salesforce_records` | `RECORDSTOOL` | CRUD on sObject records, composite batches, and collections. |
-| `salesforce_soql` | `SOQLTOOL` | Run SOQL queries (paginated, capped) and SOSL searches. |
-
-#### Verbose 1:1 API-mapped tools (`MCP_TOOL_MODE=verbose` or `both`)
-
-<details>
-<summary>1 per-operation tools — one per public API method (click to expand)</summary>
-
-| MCP Tool | Toggle Env Var | Description |
-|----------|----------------|-------------|
-| `salesforce_close` | `APITOOL` | Invoke the close operation. |
-
-</details>
-
-_5 action-routed tool(s) (default) · 1 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (`condensed` default · `verbose` 1:1 · `both`). Auto-generated — do not edit._
-<!-- MCP-TOOLS-TABLE:END -->
 
 `*` Destructive — blocked unless `SALESFORCE_ALLOW_DESTRUCTIVE=true`.
 
@@ -259,8 +245,7 @@ rows = api.soql.query("SELECT Id, Name FROM Account", max_records=200)
 api.records.upsert("Account", "External_Id__c", "X-1", {"Name": "Acme"})
 ```
 
-Typed tool-input contracts live in
-`salesforce_agent.salesforce_input_models`; typed error envelopes in
+Typed error envelopes live in
 `salesforce_agent.salesforce_response_models`.
 
 ## Deployment

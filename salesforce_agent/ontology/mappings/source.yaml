@@ -4,8 +4,8 @@ ontology_source: salesforce
 sync:
 - preset: salesforce-accounts
   server: salesforce-mcp
-  tool: salesforce_soql
-  action: query
+  tool: salesforce_soql_query
+  action: null
   records_path: records
   id_field: Id
   title_field: Name
@@ -15,8 +15,8 @@ sync:
   tool_schema_sha256: e4ddfa83b19760793b7278dfa11bc9b89688dba3ef109ed92d67450cbc6d5880
 - preset: salesforce-opportunities
   server: salesforce-mcp
-  tool: salesforce_soql
-  action: query
+  tool: salesforce_soql_query
+  action: null
   records_path: records
   id_field: Id
   title_field: Name

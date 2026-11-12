@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.8] - 2026-11-12
+
+### Removed
+- The five action-routed tools (`salesforce_soql`, `salesforce_records`, `salesforce_describe`, `salesforce_bulk`, `salesforce_admin`) and the `salesforce_input_models` module that mirrored their `params_json` payloads. Each action is already a typed per-operation tool (`salesforce_soql_query`, `salesforce_records_create`, `salesforce_describe_sobject`, `salesforce_bulk_create_ingest_job`, `salesforce_admin_user_info`, ...), so callers switch to the typed name and pass typed arguments.
+
+### Changed
+- `salesforce_ingest_crm` takes typed `sobjects` and `max_records` arguments instead of `params_json`.
+- Connector surface: tool-use contracts, links, data locations, business roles, an operator prompt and two business-role prompts, ontology classes rooted in core classes, skills rewritten for the typed tools, scion-sdk 0.9.
+
 ## [2.3.7] - 2026-10-30
 
 ### Changed
