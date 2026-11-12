@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from scion_sdk.connector_identity import connector_name
 import ast
 import tomllib
 from pathlib import Path
 
 import pytest
+from scion_sdk.connector_identity import connector_name
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = ROOT / "salesforce_agent"

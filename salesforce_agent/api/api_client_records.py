@@ -7,15 +7,16 @@ Resources:
 - Collections:     https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_composite_sobjects_collections.htm
 
 CONCEPT:SF-OS.governance.destructive-operations-delete-collections — destructive operations (delete / collections delete, and
-DELETE subrequests inside composite) are refused unless
-``allow_destructive`` is enabled.
+composite requests that may carry DELETE subrequests) are declared with the SDK
+``destructive_operation``; the SDK asks the caller to confirm.
 """
 
 from typing import Any
 
+from scion_sdk.mcp.destructive import destructive_operation
+
 from salesforce_agent.api.api_client_base import ApiClientBase
 from salesforce_agent.salesforce_response_models import (
-    DestructiveOperationBlockedError,
     SalesforceBadRequestError,
 )
 
@@ -28,10 +29,6 @@ class RecordsClient:
 
     def __init__(self, base: ApiClientBase):
         self._client = base
-
-    def _guard_destructive(self, operation: str) -> None:
-        if not self._client.auth.config.allow_destructive:
-            raise DestructiveOperationBlockedError(operation)
 
     # ------------------------------------------------------------------ #
     # Single-record CRUD
@@ -81,9 +78,9 @@ class RecordsClient:
             json=data,
         )
 
+    @destructive_operation
     def delete(self, sobject: str, record_id: str) -> dict[str, Any]:
-        """Delete one record. Gated by ``allow_destructive``."""
-        self._guard_destructive("records.delete")
+        """Delete one record."""
         return self._client.request(
             "DELETE", f"{self._client.data_base}/sobjects/{sobject}/{record_id}"
         )
@@ -91,6 +88,7 @@ class RecordsClient:
     # ------------------------------------------------------------------ #
     # Composite (heterogeneous, up to 25 subrequests)
     # ------------------------------------------------------------------ #
+    @destructive_operation
     def composite(
         self,
         subrequests: list[dict[str, Any]],
@@ -99,8 +97,8 @@ class RecordsClient:
         """Run up to 25 dependent subrequests in one ``/composite`` call.
 
         Each subrequest needs ``method``, ``url``, ``referenceId`` (and
-        ``body`` for writes). DELETE subrequests are gated by
-        ``allow_destructive``.
+        ``body`` for writes). A composite request may carry
+        DELETE subrequests, so it is declared destructive.
         """
         if not subrequests:
             raise SalesforceBadRequestError("composite needs at least one subrequest.")
@@ -109,9 +107,6 @@ class RecordsClient:
                 f"composite accepts at most {COMPOSITE_MAX_SUBREQUESTS} "
                 f"subrequests, got {len(subrequests)}."
             )
-        for sub in subrequests:
-            if str(sub.get("method", "")).upper() == "DELETE":
-                self._guard_destructive("records.composite[DELETE]")
         return self._client.request(
             "POST",
             f"{self._client.data_base}/composite",
@@ -153,9 +148,9 @@ class RecordsClient:
             json={"allOrNone": all_or_none, "records": records},
         )
 
+    @destructive_operation
     def collections_delete(self, ids: list[str], all_or_none: bool = False) -> Any:
-        """Delete up to 200 records by id. Gated by ``allow_destructive``."""
-        self._guard_destructive("records.collections_delete")
+        """Delete up to 200 records by id."""
         self._check_collection_size(len(ids), "delete")
         return self._client.request(
             "DELETE",

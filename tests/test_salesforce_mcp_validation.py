@@ -74,14 +74,6 @@ def server(fake, monkeypatch):
     api.close()
 
 
-@pytest.fixture
-def destructive_server(fake, monkeypatch):
-    api = make_api(fake, allow_destructive=True)
-    _wire(monkeypatch, api)
-    yield _build()
-    api.close()
-
-
 async def call(server, tool: str, params: dict | None = None):
     async with Client(server) as client:
         result = await client.call_tool(tool, params or {})
@@ -177,7 +169,8 @@ class TestRecordTools:
                         "referenceId": "a",
                         "body": {"Name": "Acme"},
                     }
-                ]
+                ],
+                "confirm": True,
             },
         )
         assert result["compositeResponse"][0]["referenceId"] == "a"
@@ -202,28 +195,41 @@ class TestDestructiveGatingThroughTools:
         assert result["cancelled"] is True
         assert fake.api_requests == []
 
-    async def test_confirmed_delete_is_blocked_without_the_switch(self, fake, server):
-        with pytest.raises(Exception, match="[Bb]locked|SALESFORCE_ALLOW_DESTRUCTIVE"):
-            await call(
-                server,
-                "salesforce_records_delete",
-                {"sobject": "Account", "record_id": "001A", "confirm": True},
-            )
-        assert fake.api_requests == []
-
-    async def test_bulk_delete_job_is_blocked_without_the_switch(self, fake, server):
-        with pytest.raises(Exception, match="[Bb]locked|SALESFORCE_ALLOW_DESTRUCTIVE"):
-            await call(
-                server,
+    @pytest.mark.spec("CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R004")
+    async def test_declared_operations_are_destructive_tools_that_ask_first(
+        self, fake, server
+    ):
+        async with Client(server) as client:
+            tools = {t.name: t for t in await client.list_tools()}
+        declared = {
+            "salesforce_records_delete",
+            "salesforce_records_collections_delete",
+            "salesforce_records_composite",
+            "salesforce_bulk_create_ingest_job",
+        }
+        for name in declared:
+            assert tools[name].annotations.destructive_hint is True, name
+            assert "confirm" in tools[name].input_schema["properties"], name
+        for name, tool in tools.items():
+            assert "allow_destructive" not in tool.input_schema["properties"], name
+        for name, arguments in (
+            ("salesforce_records_composite", {"subrequests": []}),
+            (
                 "salesforce_bulk_create_ingest_job",
                 {"sobject": "Account", "operation": "delete"},
-            )
+            ),
+            (
+                "salesforce_records_collections_delete",
+                {"ids": ["001A"]},
+            ),
+        ):
+            refused = await call(server, name, arguments)
+            assert refused["cancelled"] is True, name
+        assert fake.api_requests == []
 
-    async def test_confirmed_delete_runs_on_destructive_server(
-        self, fake, destructive_server
-    ):
+    async def test_confirmed_delete_runs_on_server(self, fake, server):
         result = await call(
-            destructive_server,
+            server,
             "salesforce_records_delete",
             {"sobject": "Account", "record_id": "001A", "confirm": True},
         )
@@ -257,7 +263,7 @@ class TestBulkTools:
         job = await call(
             server,
             "salesforce_bulk_create_ingest_job",
-            {"sobject": "Account", "operation": "insert"},
+            {"sobject": "Account", "operation": "insert", "confirm": True},
         )
         await call(
             server,

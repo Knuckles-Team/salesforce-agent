@@ -138,8 +138,8 @@ endpoint and AG-UI web interface on its port.
 
 All configuration is via `SALESFORCE_*` environment variables — see
 `.env.example`. Mount secrets (client secret, JWT private key) from the operator's
-secret store; never bake them into the image. Keep
-`SALESFORCE_ALLOW_DESTRUCTIVE=False` in shared deployments. Per-domain tool
+secret store; never bake them into the image. Leave
+`SCION_ALLOW_DESTRUCTIVE` unset in shared deployments, so deletes need a live confirmation. Per-domain tool
 toggles (`SOQLTOOL`, `RECORDSTOOL`, `DESCRIBETOOL`, `BULKTOOL`, `ADMINTOOL`)
 control which tools are registered.
 

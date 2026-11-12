@@ -5,7 +5,6 @@ import json
 import pytest
 
 from salesforce_agent.salesforce_response_models import (
-    DestructiveOperationBlockedError,
     SalesforceBadRequestError,
     SalesforceNotFoundError,
 )
@@ -79,17 +78,8 @@ class TestJobLifecycle:
 
 @pytest.mark.concept("SFDC-1.3")
 class TestBulkDestructiveGating:
-    def test_delete_job_blocked_by_default(self, fake, api):
-        with pytest.raises(DestructiveOperationBlockedError):
-            api.bulk.create_ingest_job("Account", "delete")
-        assert fake.api_requests == []
-
-    def test_hard_delete_blocked_by_default(self, fake, api):
-        with pytest.raises(DestructiveOperationBlockedError):
-            api.bulk.create_ingest_job("Account", "hardDelete")
-
-    def test_delete_job_allowed_when_enabled(self, fake, api_destructive):
-        job = api_destructive.bulk.create_ingest_job("Account", "delete")
+    def test_delete_job_runs(self, fake, api):
+        job = api.bulk.create_ingest_job("Account", "delete")
         assert job["operation"] == "delete"
 
 

@@ -23,7 +23,7 @@ Use the provider's governed MCP tools through Arbora delegation.
 
 - Read: `salesforce_soql_query`, `salesforce_soql_explain`, `salesforce_soql_search`, `salesforce_records_get`, `salesforce_describe_global_describe`, `salesforce_describe_sobject`, `salesforce_describe_record_counts`, `salesforce_describe_limits`.
 - Write: `salesforce_records_create`, `salesforce_records_update`, `salesforce_records_upsert`, `salesforce_records_composite`, `salesforce_records_collections_create`, `salesforce_records_collections_update`.
-- Gated delete (needs `SALESFORCE_ALLOW_DESTRUCTIVE`): `salesforce_records_delete`, `salesforce_records_collections_delete`.
+- Gated delete (asks the caller to confirm): `salesforce_records_delete`, `salesforce_records_collections_delete`.
 - Bulk: `salesforce_bulk_create_ingest_job`, `salesforce_bulk_upload`, `salesforce_bulk_close`, `salesforce_bulk_abort`, `salesforce_bulk_status`, `salesforce_bulk_list_jobs`, `salesforce_bulk_delete_job`, `salesforce_bulk_results`.
 - Org and reports: `salesforce_admin_user_info`, `salesforce_admin_org_info`, `salesforce_admin_list_reports`, `salesforce_admin_run_report`.
 - Graph: `salesforce_ingest_crm`.

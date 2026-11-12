@@ -334,10 +334,3 @@ def api(fake):
     client = make_api(fake)
     yield client
     client.close()
-
-
-@pytest.fixture
-def api_destructive(fake):
-    client = make_api(fake, allow_destructive=True)
-    yield client
-    client.close()

@@ -38,4 +38,4 @@ def test_development_skill_has_real_delivery_contract_and_actual_tests():
     assert "## Rapid delivery: the 5-minute contract" in content
     assert "tests/test_salesforce_mcp_validation.py" in content
     assert "tests/test_fleet_name.py" in content
-    assert "SALESFORCE_ALLOW_DESTRUCTIVE" in content
+    assert "destructive_operation" in content
