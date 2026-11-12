@@ -7,21 +7,21 @@ Resources (Bulk API 2.0 developer guide):
 - Job info:     https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/get_job_info.htm
 - Results:      https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/get_job_successful_results.htm
 
-CONCEPT:SF-OS.governance.destructive-operations-delete-collections — ``delete``/``hardDelete`` ingest jobs are gated by
-``allow_destructive``; result downloads are size-capped
+CONCEPT:SF-OS.governance.destructive-operations-delete-collections — ``delete``/``hardDelete`` ingest jobs are declared destructive
+with the SDK (the SDK asks the caller to confirm); result downloads are size-capped
 (``SALESFORCE_BULK_RESULTS_MAX_BYTES``).
 """
 
 from typing import Any
 
+from scion_sdk.mcp.destructive import destructive_operation
+
 from salesforce_agent.api.api_client_base import ApiClientBase
 from salesforce_agent.salesforce_response_models import (
-    DestructiveOperationBlockedError,
     SalesforceBadRequestError,
 )
 
 INGEST_OPERATIONS = {"insert", "update", "upsert", "delete", "hardDelete"}
-DESTRUCTIVE_OPERATIONS = {"delete", "hardDelete"}
 RESULT_KINDS = {
     "successful": "successfulResults",
     "failed": "failedResults",
@@ -39,6 +39,7 @@ class BulkClient:
     def _jobs_base(self) -> str:
         return f"{self._client.data_base}/jobs/ingest"
 
+    @destructive_operation
     def create_ingest_job(
         self,
         sobject: str,
@@ -49,17 +50,14 @@ class BulkClient:
     ) -> dict[str, Any]:
         """Create an ingest job (insert/update/upsert/delete/hardDelete).
 
-        ``upsert`` requires ``external_id_field``. Delete operations are
-        gated by ``allow_destructive``.
+        ``upsert`` requires ``external_id_field``. A job may delete
+        records, so creating one is declared destructive.
         """
         if operation not in INGEST_OPERATIONS:
             raise SalesforceBadRequestError(
                 f"Unknown bulk operation {operation!r}; "
                 f"expected one of {sorted(INGEST_OPERATIONS)}."
             )
-        if operation in DESTRUCTIVE_OPERATIONS:
-            if not self._client.auth.config.allow_destructive:
-                raise DestructiveOperationBlockedError(f"bulk.{operation}")
         if operation == "upsert" and not external_id_field:
             raise SalesforceBadRequestError("Bulk upsert requires external_id_field.")
         body: dict[str, Any] = {

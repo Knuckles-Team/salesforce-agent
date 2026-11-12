@@ -10,7 +10,7 @@ __all__ = ["Api", "SalesforceAuth", "SalesforceConfig", "connector", "get_client
 
 connector = Connector(
     tools="salesforce_agent.mcp_server",
-    instructions="Salesforce MCP Server — SOQL/SOSL queries, record CRUD with composite/collections batching, metadata describe, Bulk API 2.0 ingest, and org administration. Destructive operations are gated by SALESFORCE_ALLOW_DESTRUCTIVE.",
+    instructions="Salesforce MCP Server — SOQL/SOSL queries, record CRUD with composite/collections batching, metadata describe, Bulk API 2.0 ingest, and org administration. Destructive operations ask the caller to confirm (confirm=true).",
     transports=(
         "stdio",
         "streamable-http",

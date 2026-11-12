@@ -31,7 +31,7 @@ and an optional Pydantic-AI agent server. It provides:
   interface.
 
 Safety is built in: destructive paths (record delete, collections delete, bulk
-delete/hardDelete) are refused unless `SALESFORCE_ALLOW_DESTRUCTIVE=true`, result
+delete/hardDelete) ask the caller to confirm (`confirm=true`) before any request, result
 surfaces are size-capped, and secrets are redacted from errors and logs.
 
 The connector remains inactive when credentials are absent: configure

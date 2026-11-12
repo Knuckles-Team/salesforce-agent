@@ -6,7 +6,7 @@ Resources:
 
 Flows (list/run via the Actions or Tooling APIs) are intentionally OUT of
 scope for v1 of this connector — running flows mutates org state through an
-API surface with weaker guardrails; revisit behind ``allow_destructive``.
+API surface with weaker guardrails; revisit with the SDK destructive declaration.
 """
 
 from typing import Any

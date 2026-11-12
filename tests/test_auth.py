@@ -81,13 +81,11 @@ class TestConfig:
         monkeypatch.setenv("SALESFORCE_CLIENT_SECRET", "sec")
         monkeypatch.setenv("SALESFORCE_API_VERSION", "61.0")
         monkeypatch.setenv("SALESFORCE_SANDBOX", "true")
-        monkeypatch.setenv("SALESFORCE_ALLOW_DESTRUCTIVE", "true")
         monkeypatch.setenv("SALESFORCE_MAX_QUERY_RECORDS", "77")
         config = SalesforceConfig.from_env()
         assert config.flow == "client_credentials"
         assert config.api_version == "v61.0"
         assert config.sandbox is True
-        assert config.allow_destructive is True
         assert config.max_query_records == 77
 
 
@@ -142,7 +140,9 @@ class TestClientCredentialsFlow:
         with pytest.raises(SalesforceAuthError) as excinfo:
             auth.token()
         assert "example-consumer-secret" not in str(excinfo.value)
-        assert str(excinfo.value) == "Salesforce token request failed (client_credentials)"
+        assert (
+            str(excinfo.value) == "Salesforce token request failed (client_credentials)"
+        )
         assert excinfo.value.error_code == "invalid_client"
 
     def test_missing_credentials_raise(self):

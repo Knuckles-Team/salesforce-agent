@@ -38,8 +38,8 @@ SALESFORCE_CLIENT_ID=<consumer key>
 SALESFORCE_REFRESH_TOKEN=<refresh token>
 ```
 
-Set `SALESFORCE_SANDBOX=true` for sandbox orgs and
-`SALESFORCE_ALLOW_DESTRUCTIVE=true` only where deletes are genuinely wanted.
+Set `SALESFORCE_SANDBOX=true` for sandbox orgs. Deletes ask the caller to confirm (`confirm=true`); set the operator setting
+`SCION_ALLOW_DESTRUCTIVE=true` only for unattended runs where deletes are genuinely wanted.
 
 ## Verify
 

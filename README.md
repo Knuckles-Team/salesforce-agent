@@ -113,10 +113,10 @@ One typed tool per Salesforce operation, plus the knowledge-graph ingest tool. O
 | Admin | `salesforce_admin_user_info`, `_org_info`, `_list_reports`, `_run_report` |
 | Graph | `salesforce_ingest_crm` |
 
-`*` gated by `SALESFORCE_ALLOW_DESTRUCTIVE` (default `False`).
+`*` gated by the SDK confirmation (`confirm=true`).
 
 
-`*` Destructive — blocked unless `SALESFORCE_ALLOW_DESTRUCTIVE=true`.
+`*` Destructive — refused unless the caller confirms (`confirm=true`).
 
 ## Auth Flows
 
@@ -167,7 +167,6 @@ cached with expiry tracking and refreshed transparently (plus one retry on
 | `SALESFORCE_JWT_AUDIENCE` | — |  |
 | `SALESFORCE_ACCESS_TOKEN` | secret-injected | Static access token (testing / short-lived sessions) |
 | `SALESFORCE_TOKEN_TTL_SECONDS` | secret-injected | Cached-token TTL when the token response has no expires_in |
-| `SALESFORCE_ALLOW_DESTRUCTIVE` | `False` | Gate for record delete, collections delete, and bulk delete/hardDelete jobs |
 | `SALESFORCE_MAX_QUERY_RECORDS` | `2000` | Per-call cap on auto-paginated SOQL results |
 | `SALESFORCE_BULK_RESULTS_MAX_BYTES` | `5000000` | Per-call cap on Bulk API 2.0 result downloads (bytes) |
 | `SALESFORCE_REPORT_MAX_ROWS` | `2000` | Synchronous report row note (Salesforce platform caps at 2000 detail rows) |
@@ -217,7 +216,6 @@ _38 package + 16 inherited variable(s). Auto-generated from `.env.example` + the
 | `SALESFORCE_TOKEN_TTL_SECONDS` | `1800` | Cached-token TTL fallback |
 | `SALESFORCE_TLS_PROFILE` | `system` | TLS verification |
 | `SALESFORCE_TIMEOUT` | `30` | HTTP timeout (seconds) |
-| `SALESFORCE_ALLOW_DESTRUCTIVE` | `False` | Gate for all delete paths |
 | `SALESFORCE_MAX_QUERY_RECORDS` | `2000` | Per-call SOQL pagination cap |
 | `SALESFORCE_BULK_RESULTS_MAX_BYTES` | `5000000` | Bulk result download cap |
 | `SALESFORCE_REPORT_MAX_ROWS` | `2000` | Sync report detail-row note (platform cap) |

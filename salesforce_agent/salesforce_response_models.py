@@ -63,19 +63,6 @@ class SalesforceServerError(SalesforceError):
     """5xx — Salesforce-side failure."""
 
 
-class DestructiveOperationBlockedError(SalesforceError, PermissionError):
-    """A delete/hardDelete was requested while ``allow_destructive`` is False."""
-
-    def __init__(self, operation: str):
-        super().__init__(
-            f"Destructive operation {operation!r} blocked: set "
-            "SALESFORCE_ALLOW_DESTRUCTIVE=true (or allow_destructive=True) "
-            "to permit deletes.",
-            error_code="DESTRUCTIVE_OPERATION_BLOCKED",
-        )
-        self.operation = operation
-
-
 def parse_error_payload(
     text: str,
 ) -> tuple[str, str | None, list[str], list[dict[str, Any]]]:

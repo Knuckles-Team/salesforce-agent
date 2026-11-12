@@ -14,8 +14,8 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
-from scion_sdk.ingest import IngestError, KnowledgeIngest
 from medulla.generated.source_ingestion import SourceIngestionRequest
+from scion_sdk.ingest import IngestError, KnowledgeIngest
 
 from salesforce_agent.kg_ingest import (
     INGEST_QUERIES,

@@ -77,7 +77,6 @@ class SalesforceConfig:
         repr=False,
     )
     token_ttl_seconds: int = 1800
-    allow_destructive: bool = False
     max_query_records: int = 2000
     bulk_results_max_bytes: int = 5_000_000
     report_max_rows: int = 2000
@@ -145,9 +144,6 @@ class SalesforceConfig:
                 profile_ref=setting("SALESFORCE_TLS_PROFILE_REF", "") or None,
             ),
             token_ttl_seconds=int(setting("SALESFORCE_TOKEN_TTL_SECONDS", "1800")),
-            allow_destructive=to_boolean(
-                setting("SALESFORCE_ALLOW_DESTRUCTIVE", "False")
-            ),
             max_query_records=int(setting("SALESFORCE_MAX_QUERY_RECORDS", "2000")),
             bulk_results_max_bytes=int(
                 setting("SALESFORCE_BULK_RESULTS_MAX_BYTES", "5000000")
