@@ -1,7 +1,8 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix core: <https://knuckles-team.github.io/ontology/core#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix dc: <http://purl.org/dc/terms/> .
-@prefix : <http://knuckles.team/kg#> .
+@prefix : <https://knuckles-team.github.io/ontology/connector/salesforce#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -13,30 +14,32 @@
 # (salesforce_soql_* / salesforce_records_* / salesforce_describe_* / salesforce_ingest_crm).
 # :Person (shared) is REUSED for the owning Salesforce User — never redefined here.
 
-:Account a owl:Class .
+:Account a owl:Class ;
+    rdfs:subClassOf core:Account .
 
 
 :Contact a owl:Class ;
-    rdfs:subClassOf :Person ;
+    rdfs:subClassOf core:Person ;
     rdfs:label "Contact" ;
     rdfs:comment "An individual person associated with an Account (sObject Contact)." .
 
 :Opportunity a owl:Class ;
+    rdfs:subClassOf core:Opportunity ;
     rdfs:label "Opportunity" ;
     rdfs:comment "A potential revenue-generating sale/deal in the pipeline (sObject Opportunity)." .
 
 :Lead a owl:Class ;
-    rdfs:subClassOf :Customer ;
+    rdfs:subClassOf core:Customer ;
     rdfs:label "Lead" ;
     rdfs:comment "An unqualified prospect not yet converted into an Account/Contact/Opportunity (sObject Lead)." .
 
 :Case a owl:Class ;
-    rdfs:subClassOf :Ticket ;
+    rdfs:subClassOf core:Ticket ;
     rdfs:label "Case" ;
     rdfs:comment "A customer service/support ticket linked to an Account or Contact (sObject Case)." .
 
 :Campaign a owl:Class ;
-    rdfs:subClassOf :Activity ;
+    rdfs:subClassOf core:Activity ;
     rdfs:label "Campaign" ;
     rdfs:comment "A marketing campaign that generates Leads and influences Opportunities (sObject Campaign)." .
 
@@ -85,7 +88,7 @@
 :ownedBy a owl:ObjectProperty ;
     rdfs:label "owned by" ;
     rdfs:comment "Links a CRM record to the Salesforce User (:Person) that owns it (OwnerId)." ;
-    rdfs:range :Person .
+    rdfs:range core:Person .
 
 # --- fields (owl:DatatypeProperty) ---
 
@@ -129,7 +132,7 @@
     rdfs:comment "Email address of a Contact or Lead." ;
     rdfs:range xsd:string .
 
-<http://knuckles.team/kg/salesforce> a owl:Ontology ;
+<https://knuckles-team.github.io/ontology/connector/salesforce> a owl:Ontology ;
     rdfs:label "Salesforce CRM Ontology" ;
     rdfs:comment """Salesforce CRM model — accounts, contacts, opportunities, leads,
     cases and campaigns with their sales and service relationships — federated into
