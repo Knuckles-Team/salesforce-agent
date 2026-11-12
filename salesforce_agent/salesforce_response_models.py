@@ -63,7 +63,7 @@ class SalesforceServerError(SalesforceError):
     """5xx — Salesforce-side failure."""
 
 
-class DestructiveOperationBlockedError(SalesforceError):
+class DestructiveOperationBlockedError(SalesforceError, PermissionError):
     """A delete/hardDelete was requested while ``allow_destructive`` is False."""
 
     def __init__(self, operation: str):

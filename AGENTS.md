@@ -18,8 +18,7 @@ Tool-neutral rules for any AI agent or human working in this repository. This bl
 ## Project Structure
 - `salesforce_agent/`: Main package — `auth.py` (OAuth2 flows + token cache),
   `salesforce_response_models.py` (typed errors),
-  `salesforce_input_models.py` (typed tool-input contracts), `api/` (thin
-  httpx resource clients), `mcp/` (action-routed FastMCP tools),
+  `api/` (thin httpx resource clients, one typed MCP tool per method), `mcp/` (the graph-ingest tool),
   `mcp_server.py`, `agent_server.py`
 - `tests/`: Mocked-httpx test suite (`FakeSalesforce` behind `httpx.MockTransport`)
 - `docs/`: Documentation site (mkdocs) + concept registry (`CONCEPT:SF-OS.config.sfdc-x`)

@@ -26,24 +26,19 @@ OAuth2 connected-app env as the other skills). A reachable medulla engine is
 optional: the tool degrades to a no-op when none is present, so it is safe to call
 without KG infrastructure.
 
-## Tools & actions
-| Condensed tool | Purpose |
-|----------------|---------|
+## Tools
+| Tool | Purpose |
+|------|---------|
 | `salesforce_ingest_crm` | List core CRM objects via SOQL and push them into the KG as typed nodes |
 
-### Key parameters (`params_json` — a JSON **string**)
+### Key parameters
 - `sobjects` — subset of `["Account","Contact","Opportunity","Lead"]` (default: all).
 - `max_records` — per-object record cap.
 
-## Recipes (`params_json`)
-Ingest everything (all four core objects):
-```json
-{}
-```
-Ingest only the sales pipeline, capped:
-```json
-{"sobjects":["Account","Opportunity"],"max_records":500}
-```
+## Recipes
+Ingest everything: call `salesforce_ingest_crm` with no arguments.
+
+Ingest only the sales pipeline, capped: `sobjects` = `["Account","Opportunity"]`, `max_records` = 500.
 
 ## Node & link model
 | sObject | Node type | Node id | Links |
@@ -54,7 +49,6 @@ Ingest only the sales pipeline, capped:
 | Lead | `:Lead` | `salesforce:Lead:<Id>` | `:convertedToAccount`/`:convertedToOpportunity`, `:ownedBy` |
 
 ## Gotchas
-- `params_json` is a **string** of JSON — serialize it.
 - Best-effort by design: `ingested: null` means no engine was reachable, not a failure.
 - OwnerId is mapped onto the **shared** `:Person` class (never a Salesforce-specific
   user class) so ownership joins across sources.

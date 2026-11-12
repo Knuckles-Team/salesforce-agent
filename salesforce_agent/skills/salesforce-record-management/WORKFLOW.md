@@ -20,50 +20,56 @@ unless `SALESFORCE_ALLOW_DESTRUCTIVE` is enabled.
 ## When NOT to use
 - Reading/aggregating data → `salesforce-soql-query`.
 - Loading records into the knowledge graph → `salesforce-crm-knowledge-graph`.
-- Confirming field/object API names before a write → `salesforce_describe` tool.
+- Confirming field/object API names before a write → `salesforce_describe_sobject`.
 
 ## Prerequisites & environment
 Connect via the `mcp-client` skill against the **`salesforce-agent`** MCP server (same
 OAuth2 connected-app env as `salesforce-soql-query`). To allow deletes set
 `SALESFORCE_ALLOW_DESTRUCTIVE=true`; leave it unset for read/write-only safety.
 
-## Tools & actions
-| Condensed tool | Actions |
-|----------------|---------|
-| `salesforce_records` | `get`, `create`, `update`, `upsert`, `delete` (gated), `composite`, `collections_create`, `collections_update`, `collections_delete` (gated) |
-| `salesforce_bulk` | `create_job`, `upload`, `close`, `abort`, `status`, `list_jobs`, `delete_job`, `results` |
+## Tools
+| Tool | Purpose |
+|------|---------|
+| `salesforce_records_get` | Read one record by id |
+| `salesforce_records_create` | Create a record |
+| `salesforce_records_update` | Update a record by id |
+| `salesforce_records_upsert` | Upsert on an external id field |
+| `salesforce_records_delete` | Delete a record (gated) |
+| `salesforce_records_composite` | Run up to 25 dependent subrequests in one round trip |
+| `salesforce_records_collections_create` | Create up to 200 records |
+| `salesforce_records_collections_update` | Update up to 200 records |
+| `salesforce_records_collections_delete` | Delete up to 200 records by id (gated) |
+| `salesforce_describe_global_describe` | List every sObject |
+| `salesforce_describe_sobject` | Describe one sObject's fields |
+| `salesforce_describe_record_counts` | Count records per sObject |
+| `salesforce_describe_limits` | Read org limits and API usage |
+| `salesforce_bulk_create_ingest_job` | Open a Bulk API 2.0 job |
+| `salesforce_bulk_upload` | Upload CSV data to an open job |
+| `salesforce_bulk_close` | Close the job so processing starts |
+| `salesforce_bulk_abort` | Abort a job |
+| `salesforce_bulk_status` | Poll a job |
+| `salesforce_bulk_list_jobs` | List jobs |
+| `salesforce_bulk_delete_job` | Delete a finished job |
+| `salesforce_bulk_results` | Fetch successful, failed or unprocessed rows |
 
-### Key parameters (`params_json` — a JSON **string**)
-- `sobject` — API name (e.g. `Account`, `Opportunity`).
-- `data` — field→value object for create/update/upsert.
-- `external_id_field` / `external_id` — for `upsert`.
-- `records` / `ids` — for collections.
+### Key parameters
+- `sobject` — API name (e.g. `Account`, `Opportunity`); `record_id`, `fields` for reads.
+- `data` — field-to-value object for create, update and upsert.
+- `external_id_field` / `external_id` — for upsert.
+- `records` / `ids` / `all_or_none` — for collections.
 - `subrequests` — composite list of `{method,url,referenceId,body?}`.
-- Bulk: `operation` (`insert`/`update`/`upsert`/`delete`), `job_id`, `csv`, `kind`.
+- Bulk: `sobject`, `operation` (`insert`/`update`/`upsert`/`delete`), `job_id`, `csv_data`, `kind`, `locator`, `max_bytes`.
 
-## Recipes (`params_json`)
-Create an account:
-```json
-{"sobject":"Account","data":{"Name":"Acme Corp","Industry":"Technology"}}
-```
-Upsert a contact by external id:
-```json
-{"sobject":"Contact","external_id_field":"External_Id__c","external_id":"C-1001","data":{"LastName":"Doe","Email":"[REDACTED_EMAIL]"}}
-```
-Batch-update 200 opportunities (collections):
-```json
-{"records":[{"attributes":{"type":"Opportunity"},"Id":"006...","StageName":"Closed Won"}],"all_or_none":false}
-```
-Bulk job (create then upload CSV):
-```json
-{"sobject":"Lead","operation":"insert"}
-```
-```json
-{"job_id":"7501...","csv":"LastName,Company\nDoe,Acme"}
-```
+## Recipes
+Create an account (`salesforce_records_create`): `sobject` = `Account`, `data` = `{"Name":"Acme Corp","Industry":"Technology"}`.
+
+Upsert a contact by external id (`salesforce_records_upsert`): `sobject` = `Contact`, `external_id_field` = `External_Id__c`, `external_id` = `C-1001`, `data` = `{"LastName":"Doe","Email":"doe@acme.io"}`.
+
+Batch-update opportunities (`salesforce_records_collections_update`): `records` = `[{"attributes":{"type":"Opportunity"},"Id":"006...","StageName":"Closed Won"}]`, `all_or_none` = false.
+
+Bulk load: `salesforce_bulk_create_ingest_job` (`sobject` = `Lead`, `operation` = `insert`), then `salesforce_bulk_upload` (`job_id`, `csv_data`), then `salesforce_bulk_close`, then poll `salesforce_bulk_status` until `JobComplete`, then `salesforce_bulk_results`.
 
 ## Gotchas
-- `params_json` is a **string** of JSON — serialize it.
 - `composite` caps at 25 subrequests; `collections_*` cap at 200 records — the client
   raises a bad-request rather than silently truncating.
 - Each collections record needs `attributes.type`; updates also need `Id`.

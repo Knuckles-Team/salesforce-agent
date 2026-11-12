@@ -1,7 +1,7 @@
 # salesforce-agent
 
 Salesforce **API + MCP Server + A2A Agent** for the Arbora ecosystem — a
-typed, action-routed connector for the Salesforce REST, SOQL/SOSL, and Bulk API 2.0
+typed connector for the Salesforce REST, SOQL/SOSL, and Bulk API 2.0
 surface.
 
 !!! info "Official documentation"
@@ -23,10 +23,9 @@ and an optional Pydantic-AI agent server. It provides:
   collections batching, metadata describe, Bulk API 2.0 ingest, and org
   administration. No `simple-salesforce`: every endpoint is a documented thin call
   with its Salesforce API doc URL cited in the docstring.
-- **Action-routed MCP tools** — consolidated, togglable tool modules
-  (`salesforce_soql`, `salesforce_records`, `salesforce_describe`,
-  `salesforce_bulk`, `salesforce_admin`) that minimize token overhead in LLM
-  contexts.
+- **Typed MCP tools** — one tool per Salesforce operation
+  (`salesforce_soql_query`, `salesforce_records_create`, `salesforce_describe_sobject`,
+  `salesforce_bulk_create_ingest_job`, `salesforce_admin_user_info`, ...).
 - **An A2A agent server** — a Pydantic-AI graph agent (console script
   `salesforce-agent`) that calls the MCP tool surface and exposes an AG-UI web
   interface.
@@ -45,7 +44,7 @@ The connector remains inactive when credentials are absent: configure
 - :material-rocket-start: **[Installation](installation.md)** — pip, source, extras, and the prebuilt Docker image.
 - :material-server-network: **[Deployment](deployment.md)** — run the MCP and agent servers, Docker Compose.
 - :material-console: **[Usage](usage.md)** — the MCP tools, the `Api` client, and the CLI.
-- :material-sitemap: **[Overview](overview.md)** — the action-routed tool surface and architecture.
+- :material-sitemap: **[Overview](overview.md)** — the typed tool surface and architecture.
 - :material-tag-multiple: **[Concepts](concepts.md)** — the `CONCEPT:SFDC-*` registry.
 
 </div>

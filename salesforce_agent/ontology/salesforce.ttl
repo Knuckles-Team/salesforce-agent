@@ -10,13 +10,14 @@
 # Lead) plus Case and Campaign, and the relationships that tie them together. All
 # classes and properties live in the SHARED `:` (kg#) namespace; only the owl:Ontology
 # node gets the per-package IRI. Backs the salesforce-agent MCP tool surface
-# (salesforce_soql / salesforce_records / salesforce_describe / salesforce_ingest_crm).
+# (salesforce_soql_* / salesforce_records_* / salesforce_describe_* / salesforce_ingest_crm).
 # :Person (shared) is REUSED for the owning Salesforce User — never redefined here.
 
 :Account a owl:Class .
 
 
 :Contact a owl:Class ;
+    rdfs:subClassOf :Person ;
     rdfs:label "Contact" ;
     rdfs:comment "An individual person associated with an Account (sObject Contact)." .
 
@@ -25,14 +26,17 @@
     rdfs:comment "A potential revenue-generating sale/deal in the pipeline (sObject Opportunity)." .
 
 :Lead a owl:Class ;
+    rdfs:subClassOf :Customer ;
     rdfs:label "Lead" ;
     rdfs:comment "An unqualified prospect not yet converted into an Account/Contact/Opportunity (sObject Lead)." .
 
 :Case a owl:Class ;
+    rdfs:subClassOf :Ticket ;
     rdfs:label "Case" ;
     rdfs:comment "A customer service/support ticket linked to an Account or Contact (sObject Case)." .
 
 :Campaign a owl:Class ;
+    rdfs:subClassOf :Activity ;
     rdfs:label "Campaign" ;
     rdfs:comment "A marketing campaign that generates Leads and influences Opportunities (sObject Campaign)." .
 

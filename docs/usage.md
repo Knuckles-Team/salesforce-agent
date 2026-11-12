@@ -54,12 +54,12 @@ salesforce-mcp                                          # stdio
 salesforce-mcp --transport streamable-http --port 8000  # HTTP + /health
 ```
 
-Example tool calls (action-routed):
+Example tool calls:
 
 ```json
-{"tool": "salesforce_soql",    "action": "query",      "params_json": "{\"soql\": \"SELECT Id FROM Account\"}"}
-{"tool": "salesforce_records", "action": "upsert",     "params_json": "{\"sobject\": \"Account\", \"external_id_field\": \"External_Id__c\", \"external_id\": \"X-1\", \"data\": {\"Name\": \"Acme\"}}"}
-{"tool": "salesforce_bulk",    "action": "create_job", "params_json": "{\"sobject\": \"Contact\", \"operation\": \"insert\"}"}
+{"tool": "salesforce_soql_query", "arguments": {"soql": "SELECT Id FROM Account"}}
+{"tool": "salesforce_records_upsert", "arguments": {"sobject": "Account", "external_id_field": "External_Id__c", "external_id": "X-1", "data": {"Name": "Acme"}}}
+{"tool": "salesforce_bulk_create_ingest_job", "arguments": {"sobject": "Contact", "operation": "insert"}}
 ```
 
 ## A2A agent
