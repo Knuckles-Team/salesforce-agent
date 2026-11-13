@@ -1,7 +1,7 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix dc: <http://purl.org/dc/terms/> .
-@prefix : <http://knuckles.team/kg#> .
+@prefix : <https://knuckles-team.github.io/ontology/connector/salesforce#> .
 @prefix core: <https://knuckles-team.github.io/ontology/core#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -88,7 +88,7 @@
 :ownedBy a owl:ObjectProperty ;
     rdfs:label "owned by" ;
     rdfs:comment "Links a CRM record to the Salesforce User (:Person) that owns it (OwnerId)." ;
-    rdfs:range :Person .
+    rdfs:range core:Person .
 
 # --- fields (owl:DatatypeProperty) ---
 
@@ -132,7 +132,7 @@
     rdfs:comment "Email address of a Contact or Lead." ;
     rdfs:range xsd:string .
 
-<http://knuckles.team/kg/salesforce> a owl:Ontology ;
+<https://knuckles-team.github.io/ontology/connector/salesforce> a owl:Ontology ;
     rdfs:label "Salesforce CRM Ontology" ;
     rdfs:comment """Salesforce CRM model — accounts, contacts, opportunities, leads,
     cases and campaigns with their sales and service relationships — federated into

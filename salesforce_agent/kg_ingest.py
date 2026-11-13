@@ -1,4 +1,4 @@
-"""Epistemic-graph ingestion for Salesforce CRM records.
+"""Medulla ingestion for Salesforce CRM records.
 
 The salesforce-agent connector pushes CRM records into the ONE medulla
 knowledge graph as typed OWL nodes (``:Account``/``:Contact``/``:Opportunity``/
