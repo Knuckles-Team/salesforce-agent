@@ -16,7 +16,7 @@ This plan states how `salesforce-agent` delivers the rows of `CONN-SALESFORCE-AG
 - **Project Type**: connector
 - **Performance Goals**: N/A, the vendor service sets the latency
 - **Constraints**: vendor calls go through the SDK governed client; no connector-local transport
-- **Scale/Scope**: 3 active row(s) in this spec
+- **Scale/Scope**: 4 active row(s) in this spec
 
 ## Constitution Check
 
@@ -64,6 +64,7 @@ None. The constitution check passed.
 - `CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R003`: the supply-chain report in the engine reads the `coversService` link that this connector ingests; until an operator names the source field the register entry in `tasks.md` stays blocked and the report abstains `Uncovered`.
 - `CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R001`: `salesforce-mcp` in `pyproject.toml` runs `scion_sdk.cli:serve`, which builds the server from the `scion_sdk.connector` entry point `salesforce_agent:connector` (`salesforce_agent/__init__.py:11`); the SDK `Connector` then lists the packaged skills, ontology and prompts.
 - `CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R002`: arbora `fleet.call` reaches the existing SOQL tool of `salesforce_agent/mcp_server.py`; the ontology loader reads `salesforce_agent/ontology/` at server start (`salesforce_agent/__init__.py`).
+- `CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R005`: the ontology loader reads `salesforce_agent/ontology/` at server start; the engine imports the served pack and finds no redeclared core term.
 
 ## Cross-repo seams
 

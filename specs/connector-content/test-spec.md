@@ -8,6 +8,7 @@ Governing spec: [spec.md](spec.md).
 | T-002 | `CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R001` | `tests/test_default_content_surfaces.py::test_default_content_surfaces` (planned) | `resources/list` includes `skill://` and `ontology://`; `prompts/list` includes each packaged prompt. |
 | T-003 | `CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R002` | `tests/test_access_contracts.py::test_contract_class_and_soql_contract` (planned) | Test: `tests/test_access_contracts.py::test_contract_class_and_soql_contract` (L2) runs the connector ontology certification. |
 | T-004 | `CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R004` | `tests/test_salesforce_mcp_validation.py::TestDestructiveGatingThroughTools::test_declared_operations_are_destructive_tools_that_ask_first` | Each of the four served tools has `destructiveHint` true and a `confirm` argument and none has `allow_destructive`; a call without `confirm` sends no request. |
+| T-005 | `CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R005` | `tests/test_ontology_extends_core.py::test_pack_declares_no_core_term` | The served Turtle declares none of the listed core terms. |
 
 ## Negative and boundary cases
 

@@ -8,3 +8,4 @@ Each task line reads `- [ ] T001 [P] [US1] <ID>-R012.4 description`. Tasks run p
 - [x] T002 [US2] CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R001 Default content.
 - [ ] T003 [US3] CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R002 Declare the Contract class and an SOQL access contract.
 - [ ] T004 [US1] CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R004 Destructive operations use the SDK's one declaration and guard.
+- [x] T005 [US4] CONN-SALESFORCE-AGENT-CONNECTOR-CONTENT-R005 The pack extends only the core ontology.
