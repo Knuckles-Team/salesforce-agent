@@ -2,13 +2,7 @@
 name: salesforce-soql-query
 skill_type: skill
 description: >-
-  Query Salesforce data with SOQL/SOSL over the salesforce-agent MCP server — run
-  bounded SOQL queries (auto-paginated via nextRecordsUrl), queryAll over
-  soft-deleted/archived rows, read a query plan with explain, and run SOSL full-text
-  search across objects. Use when the agent must read/aggregate CRM records (accounts,
-  contacts, opportunities, leads), profile a query's cost, or full-text search. Do NOT
-  use to create/update/delete records (use salesforce-record-management) or to push
-  records into the knowledge graph (use salesforce-crm-knowledge-graph).
+  Query Salesforce over the salesforce-agent MCP server: bounded SOQL with auto-pagination, queryAll for deleted rows, explain plans and SOSL search. Use to read or aggregate CRM records or profile query cost. Not for writes (salesforce-record-management) or KG ingest (salesforce-crm-knowledge-graph).
 license: MIT
 tags: [salesforce, soql, sosl, crm, rest-api, mcp]
 metadata:
@@ -16,6 +10,8 @@ metadata:
   version: '0.1.0'
 ---
 # Salesforce SOQL / SOSL Query
+
+Scope: Query Salesforce data with SOQL/SOSL over the salesforce-agent MCP server — run bounded SOQL queries (auto-paginated via nextRecordsUrl), queryAll over soft-deleted/archived rows, read a query plan with explain, and run SOSL full-text search across objects. Use when the agent must read/aggregate CRM records (accounts, contacts, opportunities, leads), profile a query's cost, or full-text search. Do NOT use to create/update/delete records (use salesforce-record-management) or to push records into the knowledge graph (use salesforce-crm-knowledge-graph).
 
 Read-side access to a Salesforce org via SOQL and SOSL. The query tool auto-follows
 `nextRecordsUrl` pages up to a cap and flags `truncated` when the cap stops pagination
@@ -44,6 +40,21 @@ Connect via the `mcp-client` skill against the **`salesforce-agent`** MCP server
 | `SALESFORCE_MAX_QUERY_RECORDS` | optional | default pagination cap |
 
 Full env matrix: the mcp-client reference for `salesforce-agent`.
+
+## Steps
+
+1. Confirm field and object API names by calling `salesforce_describe_sobject` with `sobject`. Verify the fields you plan to select appear in the response.
+2. Check query cost on large objects by calling `salesforce_soql_explain` with `soql`. Verify the plan shows a selective index rather than a full scan.
+3. Run the read by calling `salesforce_soql_query` with `soql` and `max_records`, adding `query_all` only when deleted rows are needed. Verify the response has records and that `truncated` is false.
+4. For cross-object text lookups, call `salesforce_soql_search` with a `sosl` FIND clause. Verify the result groups records by the objects named in RETURNING.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| Authentication error on any call | `SALESFORCE_INSTANCE_URL`, `SALESFORCE_CLIENT_ID` or `SALESFORCE_CLIENT_SECRET` is missing or wrong | Set the three variables for the connected app and re-run `salesforce_describe_limits` to confirm access |
+| Response flagged `truncated` | Result exceeded `max_records` or the pagination cap | Add a WHERE clause or a smaller explicit field list to `soql`, or raise `max_records` deliberately |
+| Invalid field or object error | Misspelled API name | Call `salesforce_describe_sobject` and copy the exact field names into `soql` |
 
 ## Tools
 | Tool | Purpose |

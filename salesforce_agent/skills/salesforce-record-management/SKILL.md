@@ -2,13 +2,7 @@
 name: salesforce-record-management
 skill_type: skill
 description: >-
-  Create, update, upsert, and batch Salesforce sObject records over the
-  salesforce-agent MCP server — single-record CRUD, composite (up to 25 dependent
-  subrequests), sObject collections (up to 200 records), and Bulk API 2.0 ingest jobs
-  for large loads. Use when the agent must write CRM data: insert an account/contact,
-  update an opportunity stage, upsert on an external id, or load thousands of rows. Do
-  NOT use to read/query (use salesforce-soql-query) or to ingest into the knowledge
-  graph (use salesforce-crm-knowledge-graph). Destructive deletes are gated.
+  Write Salesforce records over the salesforce-agent MCP server: single-record CRUD, upsert, composite, sObject collections and Bulk API 2.0 loads. Use to insert, update, upsert or bulk load CRM data. Deletes need confirm=true. Not for reads (salesforce-soql-query) or KG ingest (salesforce-crm-knowledge-graph).
 license: MIT
 tags: [salesforce, crm, records, bulk, mcp]
 metadata:
@@ -16,6 +10,8 @@ metadata:
   version: '0.1.0'
 ---
 # Salesforce Record Management
+
+Scope: Create, update, upsert, and batch Salesforce sObject records over the salesforce-agent MCP server — single-record CRUD, composite (up to 25 dependent subrequests), sObject collections (up to 200 records), and Bulk API 2.0 ingest jobs for large loads. Use when the agent must write CRM data: insert an account/contact, update an opportunity stage, upsert on an external id, or load thousands of rows. Do NOT use to read/query (use salesforce-soql-query) or to ingest into the knowledge graph (use salesforce-crm-knowledge-graph). Destructive deletes are gated.
 
 The write side of a Salesforce org: single-record CRUD, heterogeneous `composite`
 batches (25 dependent subrequests), homogeneous `collections` (200 records/call), and
@@ -39,6 +35,22 @@ unless the caller confirms (`confirm=true`).
 Connect via the `mcp-client` skill against the **`salesforce-agent`** MCP server (same
 OAuth2 connected-app env as `salesforce-soql-query`). Deletes ask the caller
 to confirm (`confirm=true`).
+
+## Steps
+
+1. Confirm the target object and field API names by calling `salesforce_describe_sobject` with `sobject`. Verify every field in your `data` appears in the describe output.
+2. Write a single record by calling `salesforce_records_create`, `salesforce_records_update` or `salesforce_records_upsert` with `sobject` and `data`. Verify the response carries the record id or a 204 status for updates.
+3. For batches, call `salesforce_records_collections_create` (up to 200 records) or `salesforce_records_composite` (up to 25 subrequests). Verify each item in the response reports success.
+4. For large loads, open a job with `salesforce_bulk_create_ingest_job` and poll it with `salesforce_bulk_status` after `salesforce_bulk_upload` and `salesforce_bulk_close`. Verify the state reaches `JobComplete`.
+5. Read the outcome back by calling `salesforce_bulk_results` or `salesforce_records_get`. Verify failed and unprocessed counts are zero or explained.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| Delete refused, nothing sent | `confirm=true` was not given on a destructive call | Obtain explicit approval, then call the delete tool again with `confirm=true` |
+| Bad-request on a batch | Over 25 subrequests or 200 records, or a record lacks `attributes.type` | Split the input into smaller batches and add `attributes.type` (and `Id` for updates) to every record |
+| Bulk job stuck or failed | Bad CSV or wrong `operation` | Call `salesforce_bulk_abort` with `job_id`, fix `csv_data`, and open a new job with `salesforce_bulk_create_ingest_job` |
 
 ## Tools
 | Tool | Purpose |

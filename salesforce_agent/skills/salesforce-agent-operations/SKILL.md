@@ -19,6 +19,22 @@ Use the provider's governed MCP tools through Arbora delegation.
 5. Ingest source data only through the signed connector preset and ChangeEnvelope path.
 6. Verify the durable result and its trace/evidence before reporting completion.
 
+## Steps
+
+1. Confirm the org is reachable by calling `salesforce_admin_org_info`. Verify the response names the org and no auth error is returned.
+2. Read before changing by calling `salesforce_soql_query` or `salesforce_records_get`. Verify the records match what the request describes.
+3. Apply the change with the matching write tool, for example `salesforce_records_update`, as a fenced WorkItem after approval. Verify the response reports success for the target id.
+4. For deletes, call `salesforce_records_delete` only after explicit approval and with `confirm=true`. Verify the follow-up `salesforce_records_get` returns not found.
+5. Check API headroom after bulk activity by calling `salesforce_describe_limits`. Verify remaining API requests are above zero.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| Delete refused | Destructive tool called without `confirm=true` | Get explicit approval and call the delete tool again with `confirm=true` |
+| Auth error from `salesforce_admin_org_info` | Connected-app credentials missing or expired | Fix the connected-app settings in the environment and call `salesforce_admin_user_info` to confirm |
+| Tool name not found | Stale tool name assumed | Read `references/catalog.md` and use a name from the Tools list below |
+
 ## Tools
 
 - Read: `salesforce_soql_query`, `salesforce_soql_explain`, `salesforce_soql_search`, `salesforce_records_get`, `salesforce_describe_global_describe`, `salesforce_describe_sobject`, `salesforce_describe_record_counts`, `salesforce_describe_limits`.
