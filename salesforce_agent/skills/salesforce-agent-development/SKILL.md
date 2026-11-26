@@ -60,6 +60,22 @@ spec, tests-fast, and dependency-readiness checks to
 `Knuckles-Team/pipelines` at `rev: main`. Keep those shared hooks intact and
 fix failures at their source instead of bypassing them.
 
+## Steps
+
+1. Find the owning spec row by running `git grep -n "<term>" -- specs`. Verify one row owns the behavior you will change.
+2. Make the smallest connector-owned change, reusing the existing client and action-routed tool modules. Verify `git diff --stat` shows only intended files.
+3. Run the focused tests with `uv run --all-extras pytest tests/test_salesforce_mcp_validation.py -q`. Verify the run ends with all tests passed.
+4. Run the shared gate with `uvx pre-commit run --all-files`. Verify every hook reports Passed.
+5. Stage reviewed paths with `git add -- <path>` and check `git diff --cached --name-status`. Verify only intended files are listed and the commit carries the `Spec:` trailer.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---------|-------|----------|
+| Focused test fails on a live call | A test hit a real org instead of the mock | Route the request through the `FakeSalesforce` transport in the test |
+| Pre-commit hook fails | Formatting, spelling or spec finding | Read the hook output, fix the flagged file, and re-stage the exact path |
+| No spec row matches | Behavior is not yet specified | Extend the closest row under `specs/` first, then re-run the `git grep` search |
+
 ## Connector-specific checks
 
 - Mock Salesforce requests with the existing `FakeSalesforce` transport; never
