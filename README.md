@@ -5,26 +5,26 @@
 ![MCP Server](https://badge.mcpx.dev?type=server 'MCP Server')
 ![PyPI - Downloads](https://img.shields.io/pypi/dd/salesforce-agent)
 ![GitHub Repo stars](https://img.shields.io/github/stars/Knuckles-Team/salesforce-agent)
+![GitHub forks](https://img.shields.io/github/forks/Knuckles-Team/salesforce-agent)
+![GitHub contributors](https://img.shields.io/github/contributors/Knuckles-Team/salesforce-agent)
 ![PyPI - License](https://img.shields.io/pypi/l/salesforce-agent)
+![GitHub](https://img.shields.io/github/license/Knuckles-Team/salesforce-agent)
 ![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/Knuckles-Team/salesforce-agent)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/Knuckles-Team/salesforce-agent)
+![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/Knuckles-Team/salesforce-agent)
+![GitHub issues](https://img.shields.io/github/issues/Knuckles-Team/salesforce-agent)
+![GitHub top language](https://img.shields.io/github/languages/top/Knuckles-Team/salesforce-agent)
+![GitHub language count](https://img.shields.io/github/languages/count/Knuckles-Team/salesforce-agent)
+![GitHub repo size](https://img.shields.io/github/repo-size/Knuckles-Team/salesforce-agent)
+![GitHub repo file count (file type)](https://img.shields.io/github/directory-file-count/Knuckles-Team/salesforce-agent)
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/salesforce-agent)
+![PyPI - Implementation](https://img.shields.io/pypi/implementation/salesforce-agent)
 
-> **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
-> server live on the docs site:
-> <https://knuckles-team.github.io/salesforce-agent/>
+> **Documentation** — Installation, deployment, and usage across the API, CLI, MCP,
+> and A2A agent interfaces are maintained in the
+> [official documentation](https://knuckles-team.github.io/salesforce-agent/).
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [Installation](#installation)
-- [MCP Tools](#mcp-tools)
-- [Auth Flows](#auth-flows)
-- [Environment Variables](#environment-variables)
-- [Quick Start](#quick-start)
-- [Deployment](#deployment)
-- [Development](#development)
-- [License](#license)
+---
 
 ## Overview
 
@@ -35,6 +35,8 @@ gates designed for autonomous agents.
 
 No `simple-salesforce`: every endpoint is a documented thin call with its
 Salesforce API doc URL cited in the docstring.
+
+---
 
 ## Architecture
 
@@ -47,60 +49,11 @@ graph TD
     Client --> ExternalAPI([Salesforce REST API])
 ```
 
-## Installation
+---
 
-> **Install the connector-focused `[mcp]` extra.** Examples use `salesforce-agent[mcp]` to add
-> FastMCP / FastAPI through `scion-sdk[mcp]`; the required Meristem core
-> still carries `medulla[full]`. The `[agent]` extra also
-> enables model orchestration.
+## MCP
 
-Pick the extra that matches what the operator want to run:
-
-| Extra | Installs | Use when |
-|-------|----------|----------|
-| `salesforce-agent` (core) | Owned thin httpx Salesforce client (no server tooling) | The operator only use the **Python `Api` client** |
-| `salesforce-agent[mcp]` | Connector-focused MCP server (`scion-sdk[mcp]` — FastMCP/FastAPI + `medulla[full]`) | The operator run the **MCP server** (smallest server install / image) |
-| `salesforce-agent[agent]` | Agent runtime (`scion-sdk[agent-runtime,logfire]` — model orchestration + `medulla[full]`) | The operator run the **integrated agent** |
-| `salesforce-agent[jwt]` | + `cryptography` for the JWT bearer flow | The operator authenticate via OAuth2 JWT bearer |
-| `salesforce-agent[all]` | Everything (`mcp` + `agent` + `jwt` + `logfire`) | Development / all surfaces |
-
-```bash
-pip install salesforce-agent            # core client only
-pip install "salesforce-agent[mcp]"     # + FastMCP server
-pip install "salesforce-agent[agent]"   # + Pydantic AI A2A agent (medulla engine)
-pip install "salesforce-agent[jwt]"     # + cryptography for the JWT bearer flow
-pip install "salesforce-agent[all]"     # everything
-```
-
-### Container images (`:mcp` vs `:agent`)
-
-One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `--target`:
-
-| Image tag | Build target | Contents | Entrypoint |
-|-----------|--------------|----------|------------|
-| `example/salesforce-agent:mcp` | `--target mcp` | `salesforce-agent[mcp]` — **connector-focused**, includes `medulla[full]`; no model-orchestration stack | `salesforce-mcp` |
-| `example/salesforce-agent@sha256:<digest>` | `--target agent` (default) | `salesforce-agent[agent]` — **agent runtime**, model orchestration + `medulla[full]` | `salesforce-agent` |
-
-```bash
-docker build --target mcp   -t example/salesforce-agent:mcp    docker/   # connector-focused MCP server
-docker build --target agent -t example/salesforce-agent:agent-local docker/   # agent runtime
-```
-
-`docker/mcp.compose.yml` runs the connector-focused `:mcp` server; `docker/agent.compose.yml` runs the
-agent (`immutable agent digest`) with a co-located `:mcp` sidecar.
-
-### Knowledge-graph database (`medulla`)
-
-Both `[mcp]` and `[agent]` carry the **medulla** engine through the required
-Meristem core dependency (`medulla[full]`). The `[mcp]` extra keeps
-the server connector-focused; `[agent]` also enables model orchestration. Local
-deployments can use the bundled engine. For production or shared state, run
-**medulla as a dedicated database service** and configure the runtime to use it.
-Deployment recipes (single-node + Raft HA), connection configuration, and architecture
-diagrams are documented in the
-[medulla deployment guide](https://knuckles-team.github.io/medulla/deployment/).
-
-## MCP Tools
+### MCP Tools
 
 One typed tool per Salesforce operation, plus the knowledge-graph ingest tool. Operation tools are named `salesforce_<resource>_<operation>` and take typed arguments; no tool takes an `action`.
 
@@ -118,6 +71,8 @@ One typed tool per Salesforce operation, plus the knowledge-graph ingest tool. O
 
 `*` Destructive — refused unless the caller confirms (`confirm=true`).
 
+---
+
 ## Auth Flows
 
 | Flow | Credentials | Notes |
@@ -130,6 +85,8 @@ One typed tool per Salesforce operation, plus the knowledge-graph ingest tool. O
 Sandbox orgs: `SALESFORCE_SANDBOX=true` (`test.salesforce.com`). Tokens are
 cached with expiry tracking and refreshed transparently (plus one retry on
 401); secrets are redacted from all errors and logs.
+
+---
 
 ## Environment Variables
 
@@ -227,6 +184,8 @@ _38 package + 16 inherited variable(s). Auto-generated from `.env.example` + the
 
 See `.env.example` for the full annotated list.
 
+---
+
 ## Quick Start
 
 ```bash
@@ -245,6 +204,8 @@ api.records.upsert("Account", "External_Id__c", "X-1", {"Name": "Acme"})
 
 Typed error envelopes live in
 `salesforce_agent.salesforce_response_models`.
+
+---
 
 ## Deployment
 
@@ -280,6 +241,8 @@ the detailed transport contract.
   `MCP_ALLOWED_HOSTS` in `AgentConfig`.
 <!-- END GENERATED: additional-deployment-options -->
 
+---
+
 ## Development
 
 ```bash
@@ -288,10 +251,93 @@ pytest                       # mocked httpx suite — no live org required
 pre-commit run --all-files   # must be fully green before committing
 ```
 
+---
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
 
+---
+
+## Installation
+
+> **Install the connector-focused `[mcp]` extra.** Examples use `salesforce-agent[mcp]` to add
+> FastMCP / FastAPI through `scion-sdk[mcp]`; the required Meristem core
+> still carries `medulla[full]`. The `[agent]` extra also
+> enables model orchestration.
+
+Pick the extra that matches what the operator want to run:
+
+| Extra | Installs | Use when |
+|-------|----------|----------|
+| `salesforce-agent` (core) | Owned thin httpx Salesforce client (no server tooling) | The operator only use the **Python `Api` client** |
+| `salesforce-agent[mcp]` | Connector-focused MCP server (`scion-sdk[mcp]` — FastMCP/FastAPI + `medulla[full]`) | The operator run the **MCP server** (smallest server install / image) |
+| `salesforce-agent[agent]` | Agent runtime (`scion-sdk[agent-runtime,logfire]` — model orchestration + `medulla[full]`) | The operator run the **integrated agent** |
+| `salesforce-agent[jwt]` | + `cryptography` for the JWT bearer flow | The operator authenticate via OAuth2 JWT bearer |
+| `salesforce-agent[all]` | Everything (`mcp` + `agent` + `jwt` + `logfire`) | Development / all surfaces |
+
+```bash
+pip install salesforce-agent            # core client only
+pip install "salesforce-agent[mcp]"     # + FastMCP server
+pip install "salesforce-agent[agent]"   # + Pydantic AI A2A agent (medulla engine)
+pip install "salesforce-agent[jwt]"     # + cryptography for the JWT bearer flow
+pip install "salesforce-agent[all]"     # everything
+```
+
+### Container images (`:mcp` vs `:agent`)
+
+One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `--target`:
+
+| Image tag | Build target | Contents | Entrypoint |
+|-----------|--------------|----------|------------|
+| `example/salesforce-agent:mcp` | `--target mcp` | `salesforce-agent[mcp]` — **connector-focused**, includes `medulla[full]`; no model-orchestration stack | `salesforce-mcp` |
+| `example/salesforce-agent@sha256:<digest>` | `--target agent` (default) | `salesforce-agent[agent]` — **agent runtime**, model orchestration + `medulla[full]` | `salesforce-agent` |
+
+```bash
+docker build --target mcp   -t example/salesforce-agent:mcp    docker/   # connector-focused MCP server
+docker build --target agent -t example/salesforce-agent:agent-local docker/   # agent runtime
+```
+
+`docker/mcp.compose.yml` runs the connector-focused `:mcp` server; `docker/agent.compose.yml` runs the
+agent (`immutable agent digest`) with a co-located `:mcp` sidecar.
+
+### Knowledge-graph database (`medulla`)
+
+Both `[mcp]` and `[agent]` carry the **medulla** engine through the required
+Meristem core dependency (`medulla[full]`). The `[mcp]` extra keeps
+the server connector-focused; `[agent]` also enables model orchestration. Local
+deployments can use the bundled engine. For production or shared state, run
+**medulla as a dedicated database service** and configure the runtime to use it.
+Deployment recipes (single-node + Raft HA), connection configuration, and architecture
+diagrams are documented in the
+[medulla deployment guide](https://knuckles-team.github.io/medulla/deployment/).
+
+---
+
+## Documentation
+
+The complete documentation is published as the
+[official documentation site](https://knuckles-team.github.io/salesforce-agent/) and is
+the recommended reference for installation, deployment, and day-to-day operation.
+
+---
+
+## Repository Owners
+
+<img width="100%" height="180em" src="https://github-readme-stats.vercel.app/api?username=example&show_icons=true&hide_border=true&&count_private=true&include_all_commits=true" />
+
+![GitHub followers](https://img.shields.io/github/followers/example)
+![GitHub User's stars](https://img.shields.io/github/stars/example)
+
+---
+
+## Contribute
+
+Contributions are welcome! Please ensure code quality by running local checks before submitting pull requests:
+- Format code using `ruff format .`
+- Lint code using `ruff check .`
+- Validate type-safety with `mypy .`
+- Run test suites using `pytest`
 
 <!-- BEGIN scion-sdk-deployment (generated; do not edit between markers) -->
 
